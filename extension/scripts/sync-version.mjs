@@ -27,14 +27,17 @@ writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
 const versionJsPath = join(extRoot, "lib", "version.js");
 const versionJs = readFileSync(versionJsPath, "utf8");
-const next = versionJs.replace(
-  /export const APP_VERSION = "[^"]+";/,
-  `export const APP_VERSION = "${version}";`
-);
-if (next === versionJs) {
-  console.error("sync-version: could not update lib/version.js");
+const appVersionRe = /export const APP_VERSION = ["'][^"']+["'];?/;
+if (!appVersionRe.test(versionJs)) {
+  console.error(
+    "sync-version: lib/version.js must export APP_VERSION = \"x.y.z\";"
+  );
   process.exit(1);
 }
+const next = versionJs.replace(
+  appVersionRe,
+  `export const APP_VERSION = "${version}";`
+);
 writeFileSync(versionJsPath, next);
 
 console.log("sync-version: ok →", version);
