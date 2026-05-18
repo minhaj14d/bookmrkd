@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "settings": {
+    "max_folder_depth": 3,
+    "fuzzy_duplicate_title_ratio": 0.88,
+    "relevance_recency_weight": 30,
+    "relevance_icon_bonus": 10,
+    "relevance_generic_title_penalty": 12
+  },
+  "taxonomy": {
+    "description": "Top-level folders used by built-in rules and the legacy classifier.",
+    "tops": [
+      "Learning",
+      "Productivity",
+      "Web Development",
+      "Career & Jobs",
+      "Design",
+      "Entertainment",
+      "Archive",
+      "Security",
+      "Research",
+      "Data Science",
+      "AI & Machine Learning",
+      "Linux & Systems",
+      "Mathematics"
+    ]
+  },
+  "rules": [
+    {
+      "id": "short_links",
+      "priority": 10000,
+      "folder": ["Archive", "Short Links"],
+      "any": [
+        { "url_contains": "bit.ly/" },
+        { "url_contains": "tinyurl.com/" },
+        { "url_contains": "t.co/" },
+        { "url_contains": "goo.gl/" },
+        { "url_contains": "ow.ly/" },
+        { "url_contains": "is.gd/" },
+        { "url_contains": "buff.ly/" }
+      ]
+    },
+    {
+      "id": "social_networks",
+      "priority": 9000,
+      "folder": ["Archive", "Social & Leisure"],
+      "any": [
+        { "host_contains": "facebook.com" },
+        { "host_contains": "instagram.com" },
+        { "host_contains": "twitter.com" },
+        { "host_contains": "x.com" },
+        { "host_contains": "tiktok.com" },
+        { "host_contains": "pinterest.com" },
+        { "host_contains": "snapchat.com" },
+        { "host_contains": "threads.net" },
+        { "host_contains": "mastodon." },
+        { "host_contains": "bsky.app" }
+      ]
+    },
+    {
+      "id": "social_chat",
+      "priority": 8900,
+      "folder": ["Productivity", "Communication"],
+      "any": [
+        { "host_contains": "discord.com" },
+        { "host_contains": "discord.gg" },
+        { "host_contains": "telegram.org" },
+        { "host_contains": "web.telegram" },
+        { "host_contains": "t.me" },
+        { "host_contains": "whatsapp.com" },
+        { "host_contains": "web.whatsapp" },
+        { "host_contains": "signal.org" },
+        { "host_contains": "slack.com" },
+        { "host_contains": "teams.microsoft" },
+        { "host_contains": "zoom.us" }
+      ]
+    },
+    {
+      "id": "shopping",
+      "priority": 8800,
+      "folder": ["Archive", "News & Shopping"],
+      "any": [
+        { "host_contains": "amazon." },
+        { "host_contains": "ebay." },
+        { "host_contains": "etsy.com" },
+        { "host_contains": "walmart.com" },
+        { "host_contains": "target.com" },
+        { "host_contains": "aliexpress.com" },
+        { "host_contains": "shopify.com" },
+        { "host_contains": "bestbuy.com" }
+      ]
+    },
+    {
+      "id": "news_media",
+      "priority": 8700,
+      "folder": ["Archive", "News & Shopping"],
+      "any": [
+        { "host_contains": "bbc." },
+        { "host_contains": "cnn.com" },
+        { "host_contains": "reuters.com" },
+        { "host_contains": "nytimes.com" },
+        { "host_contains": "theguardian.com" },
+        { "host_contains": "washingtonpost.com" },
+        { "host_contains": "news.google" },
+        { "host_contains": "apnews.com" },
+        { "host_contains": "npr.org" }
+      ]
+    },
+    {
+      "id": "streaming_video",
+      "priority": 8600,
+      "folder": ["Entertainment", "Streaming"],
+      "any": [
+        { "host_contains": "netflix.com" },
+        { "host_contains": "hulu.com" },
+        { "host_contains": "disneyplus.com" },
+        { "host_contains": "disney.com" },
+        { "host_contains": "primevideo.com" },
+        { "host_contains": "max.com" },
+        { "host_contains": "twitch.tv" },
+        { "host_contains": "crunchyroll.com" }
+      ]
+    },
+    {
+      "id": "streaming_music",
+      "priority": 8550,
+      "folder": ["Entertainment", "Music & Audio"],
+      "any": [
+        { "host_contains": "spotify.com" },
+        { "host_contains": "soundcloud.com" },
+        { "host_contains": "music.apple.com" },
+        { "host_contains": "music.youtube.com" },
+        { "host_contains": "deezer.com" },
+        { "host_contains": "tidal.com" }
+      ]
+    },
+    {
+      "id": "youtube_learning",
+      "priority": 8500,
+      "folder": ["Learning", "Video & Channels"],
+      "any": [
+        { "host_contains": "youtube.com" },
+        { "host_contains": "youtu.be" }
+      ]
+    },
+    {
+      "id": "gaming",
+      "priority": 8400,
+      "folder": ["Entertainment", "Games"],
+      "any": [
+        { "host_contains": "store.steampowered.com" },
+        { "host_contains": "steampowered.com" },
+        { "host_contains": "steamcommunity.com" },
+        { "host_contains": "epicgames.com" },
+        { "host_contains": "roblox.com" },
+        { "host_contains": "xbox.com" },
+        { "host_contains": "playstation.com" },
+        { "host_contains": "nintendo.com" }
+      ]
+    },
+    {
+      "id": "email_cloud",
+      "priority": 8300,
+      "folder": ["Productivity", "Email & Cloud"],
+      "any": [
+        { "host_contains": "mail.google" },
+        { "host_contains": "gmail.com" },
+        { "host_contains": "outlook.live" },
+        { "host_contains": "outlook.office" },
+        { "host_contains": "office.com" },
+        { "host_contains": "mail.yahoo" },
+        { "host_contains": "proton.me" },
+        { "host_contains": "protonmail.com" },
+        { "host_contains": "icloud.com" },
+        { "host_contains": "dropbox.com" },
+        { "host_contains": "onedrive.live" },
+        { "host_contains": "box.com" }
+      ]
+    },
+    {
+      "id": "productivity_apps",
+      "priority": 8200,
+      "folder": ["Productivity", null],
+      "any": [
+        { "host_contains": "notion.so" },
+        { "host_contains": "trello.com" },
+        { "host_contains": "asana.com" },
+        { "host_contains": "monday.com" },
+        { "host_contains": "airtable.com" },
+        { "host_contains": "figma.com" },
+        { "host_contains": "canva.com" },
+        { "host_contains": "evernote.com" },
+        { "host_contains": "todoist.com" }
+      ]
+    },
+    {
+      "id": "google_workspace",
+      "priority": 8100,
+      "folder": ["Productivity", null],
+      "any": [
+        { "host_contains": "drive.google" },
+        { "host_contains": "docs.google" },
+        { "host_contains": "calendar.google" },
+        { "host_contains": "keep.google" },
+        { "host_contains": "sheets.google" },
+        { "host_contains": "slides.google" },
+        { "host_contains": "meet.google" }
+      ]
+    },
+    {
+      "id": "finance",
+      "priority": 8000,
+      "folder": ["Career & Jobs", "Finance"],
+      "any": [
+        { "host_contains": "paypal.com" },
+        { "host_contains": "venmo.com" },
+        { "host_contains": "stripe.com" },
+        { "host_contains": "chase.com" },
+        { "host_contains": "bankofamerica.com" },
+        { "host_contains": "wellsfargo.com" },
+        { "host_contains": "mint.intuit" },
+        { "host_contains": "robinhood.com" },
+        { "host_contains": "coinbase.com" }
+      ]
+    },
+    {
+      "id": "travel",
+      "priority": 7900,
+      "folder": ["Archive", "Travel"],
+      "any": [
+        { "host_contains": "airbnb." },
+        { "host_contains": "booking.com" },
+        { "host_contains": "expedia.com" },
+        { "host_contains": "kayak.com" },
+        { "host_contains": "tripadvisor.com" },
+        { "host_contains": "hotels.com" },
+        { "host_contains": "skyscanner." }
+      ]
+    },
+    {
+      "id": "career_jobs",
+      "priority": 7800,
+      "folder": ["Career & Jobs", null],
+      "any": [
+        { "host_contains": "linkedin.com" },
+        { "host_contains": "indeed.com" },
+        { "host_contains": "glassdoor.com" },
+        { "host_contains": "wellfound.com" },
+        { "host_contains": "angel.co" },
+        { "host_contains": "greenhouse.io" },
+        { "host_contains": "lever.co" }
+      ]
+    },
+    {
+      "id": "learning_platforms",
+      "priority": 7700,
+      "folder": ["Learning", "Courses & Platforms"],
+      "any": [
+        { "host_contains": "coursera.org" },
+        { "host_contains": "udemy.com" },
+        { "host_contains": "khanacademy.org" },
+        { "host_contains": "duolingo.com" },
+        { "host_contains": "edx.org" },
+        { "host_contains": "pluralsight.com" },
+        { "host_contains": "skillshare.com" },
+        { "host_contains": "codecademy.com" },
+        { "host_contains": "freecodecamp.org" }
+      ]
+    },
+    {
+      "id": "dev_reference",
+      "priority": 7600,
+      "folder": ["Web Development", "Reference & Learning"],
+      "any": [
+        { "host_contains": "stackoverflow.com" },
+        { "host_contains": "stackexchange.com" },
+        { "host_contains": "developer.mozilla.org" },
+        { "host_contains": "mdn.dev" },
+        { "host_contains": "w3schools.com" },
+        { "host_contains": "npmjs.com" },
+        { "host_contains": "nodejs.org" },
+        { "host_contains": "react.dev" },
+        { "host_contains": "vuejs.org" },
+        { "host_contains": "angular.io" },
+        { "host_contains": "nextjs.org" }
+      ]
+    },
+    {
+      "id": "github",
+      "priority": 7500,
+      "folder": ["Web Development", "Repositories"],
+      "any": [
+        { "host_contains": "github.com" },
+        { "host_contains": "github.io" }
+      ]
+    },
+    {
+      "id": "ai_tools",
+      "priority": 7400,
+      "folder": ["AI & Machine Learning", "Tools"],
+      "any": [
+        { "host_contains": "chat.openai.com" },
+        { "host_contains": "openai.com" },
+        { "host_contains": "claude.ai" },
+        { "host_contains": "anthropic.com" },
+        { "host_contains": "gemini.google" },
+        { "host_contains": "aistudio.google" },
+        { "host_contains": "copilot.microsoft" },
+        { "host_contains": "perplexity.ai" },
+        { "host_contains": "huggingface.co" }
+      ]
+    },
+    {
+      "id": "forums",
+      "priority": 7300,
+      "folder": ["Archive", "Forums & Threads"],
+      "any": [
+        { "host_contains": "reddit.com" },
+        { "host_contains": "old.reddit.com" },
+        { "host_contains": "quora.com" },
+        { "host_contains": "news.ycombinator.com" }
+      ]
+    },
+    {
+      "id": "health",
+      "priority": 7200,
+      "folder": ["Archive", "Health"],
+      "any": [
+        { "host_contains": "webmd.com" },
+        { "host_contains": "mayoclinic.org" },
+        { "host_contains": "healthline.com" },
+        { "host_contains": "nih.gov" }
+      ]
+    },
+    {
+      "id": "government_reference",
+      "priority": 7100,
+      "folder": ["Archive", "Reference"],
+      "any": [
+        { "host_contains": ".gov" },
+        { "host_contains": "wikipedia.org" },
+        { "host_contains": "wikimedia.org" }
+      ]
+    }
+  ]
+}

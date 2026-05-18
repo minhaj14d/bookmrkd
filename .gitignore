@@ -1,0 +1,53 @@
+# Secrets & environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.envrc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Node / extension dev
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+extension/node_modules/
+
+# Build & packaging
+dist/
+build/
+out/
+release/
+*.crx
+*.pem
+*.zip
+
+# OS & editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Bookmark backups & exports
+*.backup-*.html
+bookmarks_export*.html
+cleaned_bookmarks.html
+
+# Extension local
+extension/.DS_Store
+
+# Logs
+*.log
+logs/

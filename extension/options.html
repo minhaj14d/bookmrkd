@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bookmrkd — Settings</title>
+    <link rel="icon" href="icons/conversion.png" type="image/png" />
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/icons.css" />
+    <link rel="stylesheet" href="styles/fluent-controls.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="top">
+        <img src="icons/conversion.png" width="40" height="40" alt="" class="logo" />
+        <div>
+          <h1>bookmrkd</h1>
+          <p class="sub">Semantic Bookmark Organizer</p>
+        </div>
+      </header>
+
+      <section class="block">
+        <label class="label" for="data-source">
+          <span class="icon icon--sm" aria-hidden="true"><svg><use href="icons/sprites.svg#icon-browser"></use></svg></span>
+          Bookmark source
+        </label>
+        <p class="help">
+          Choose where bookmarks are read from before analysis. <strong>This browser</strong> uses the Chrome
+          bookmarks API (works in Chrome, Edge, Brave, and other Chromium browsers). <strong>Imported HTML</strong> uses
+          a file you exported from Bookmark Manager (⋮ → Export bookmarks).
+        </p>
+        <select id="data-source" class="select">
+          <option value="browser">This browser (Chrome / Edge / Brave)</option>
+          <option value="html">Imported HTML file</option>
+        </select>
+        <div id="html-import-panel" class="html-panel" hidden>
+          <div id="html-drop" class="drop" tabindex="0" role="button">
+            <span class="icon" aria-hidden="true"><svg><use href="icons/sprites.svg#icon-import"></use></svg></span>
+            <span id="html-drop-label">Choose bookmarks.html or drag here</span>
+          </div>
+          <input type="file" id="html-file" accept=".html,.htm,text/html" hidden />
+          <button type="button" id="btn-clear-html" class="link-btn" hidden>Clear file</button>
+        </div>
+      </section>
+
+      <section class="block">
+        <label class="label">Organization mode</label>
+        <p class="help">
+          <strong>Offline</strong> — Free and private. Bookmarks are sorted with built-in folder rules (social, shopping,
+          learning, dev, and more) plus optional custom JSON. Nothing leaves your device.<br /><br />
+          <strong>Online</strong> — Same offline rules first; then hard-to-classify items (low score or still
+          “Uncategorized”) are sent in small batches to your AI provider. Only <em>title + URL</em> are shared.
+        </p>
+        <div class="segmented" role="group" aria-label="Organization mode">
+          <button type="button" class="seg" id="mode-off" aria-pressed="true">Offline</button>
+          <button type="button" class="seg" id="mode-on" aria-pressed="false">Online</button>
+        </div>
+      </section>
+
+      <section id="ai-panel" class="block" hidden>
+        <input type="hidden" id="ai-provider" value="gemini" />
+        <div class="recommended-card" role="note">
+          <strong>Recommended: Google Gemini</strong>
+          <p class="help">
+            Free tier with an API key from
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Paid
+            providers (OpenAI, Claude, etc.) are not listed here because they require billing — Gemini works reliably for
+            bookmark sorting.
+          </p>
+        </div>
+
+        <label class="label" for="ai-model">Model</label>
+        <p class="help">
+          All listed models are on Gemini’s free API tier. <strong>Gemini 2.0 Flash</strong> is the recommended default
+          for speed and quality on large libraries.
+        </p>
+        <select id="ai-model" class="select"></select>
+
+        <div id="api-status" class="status-card" data-state="missing">
+          <span class="status-icon icon icon--lg" aria-hidden="true"><svg><use href="icons/sprites.svg#icon-check"></use></svg></span>
+          <div class="status-text">
+            <strong id="api-status-title">API key required</strong>
+            <span id="api-status-sub">Add a key below</span>
+          </div>
+        </div>
+
+        <label class="label" for="api-key-input">API key</label>
+        <p class="help">
+          Stored only in this browser (<code>chrome.storage.local</code>). Get a key from
+          <a id="key-help-link" href="#" target="_blank" rel="noopener">your provider</a>.
+        </p>
+        <div class="input-wrap">
+          <input type="password" id="api-key-input" class="input" autocomplete="off" placeholder="Paste your key" />
+          <button type="button" id="btn-toggle-key" class="input-addon" aria-label="Show API key">
+            <span class="icon"><svg><use href="icons/sprites.svg#icon-eye"></use></svg></span>
+          </button>
+        </div>
+
+        <button type="button" id="btn-save-key" class="btn primary">Save API key</button>
+      </section>
+
+      <section class="block">
+        <label class="label">
+          <input type="checkbox" id="fuzzy-dedupe-default" />
+          Fuzzy dedupe (default in popup)
+        </label>
+        <p class="help">
+          When enabled, bookmarks on the <strong>same website</strong> with <strong>very similar titles</strong> are
+          treated as duplicates (not just identical URLs). Example: “React docs” and “React Documentation” on
+          react.dev — only the newer one is kept. Turn off if you want to keep near-duplicate titles on purpose.
+        </p>
+      </section>
+
+      <section class="block privacy-card">
+        <div class="privacy-head">
+          <span class="icon icon--lg" aria-hidden="true"><svg><use href="icons/sprites.svg#icon-shield"></use></svg></span>
+          <div>
+            <strong>Privacy</strong>
+            <p>Keys stay on this device only.</p>
+          </div>
+        </div>
+        <p class="privacy-body">
+          <strong>Offline</strong> mode never leaves your machine. <strong>Online</strong> mode sends batched title/URL
+          pairs to Google Gemini when you add a key. Export produces HTML you import yourself — bookmrkd does not delete
+          or overwrite bookmarks automatically.
+          <a id="privacy-policy-link" href="privacy.html" target="_blank" rel="noopener">Full privacy policy</a>
+        </p>
+      </section>
+
+      <section class="block danger-card">
+        <h2 class="danger-title">Danger zone</h2>
+        <p class="help">Removes your saved Gemini API key. Rules and imported HTML are not deleted.</p>
+        <button type="button" id="btn-remove-keys" class="btn danger">Remove all API keys</button>
+      </section>
+
+      <button type="button" id="btn-start" class="btn cta">Start organizing bookmarks</button>
+
+      <details class="advanced">
+        <summary>Built-in folders</summary>
+        <p class="help">
+          Offline mode uses host-based rules for common sites, then a large legacy classifier. Top-level folders include
+          Learning, Productivity, Web Development, Career &amp; Jobs, Entertainment, Archive, Security, Research, and
+          AI &amp; Machine Learning. Unmatched links go to <strong>Archive › Uncategorized</strong> (Online mode can refine
+          those).
+        </p>
+      </details>
+
+      <details class="advanced">
+        <summary>Custom rules (optional)</summary>
+        <p class="help">
+          Custom rules are <strong>merged</strong> with built-in rules (not replaced). First matching rule wins
+          (higher <code>priority</code> first). Example: send all links on your company wiki to a “Work” folder.
+        </p>
+        <textarea id="custom-rules" class="textarea" rows="6" spellcheck="false" placeholder='{"version":1,"rules":[]}'></textarea>
+        <p id="rules-error" class="error" hidden role="alert"></p>
+        <div class="rules-actions">
+          <button type="button" id="btn-save-rules" class="btn primary">Save rules</button>
+          <button type="button" id="btn-export-rules" class="btn standard">Export JSON</button>
+          <button type="button" id="btn-import-rules" class="btn standard">Import file</button>
+          <button type="button" id="btn-load-builtin-rules" class="btn standard">Load built-in template</button>
+          <input type="file" id="rules-file" accept=".json,application/json" hidden />
+        </div>
+      </details>
+
+      <p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
+
+      <footer class="foot">
+        <span id="version">bookmrkd</span>
+      </footer>
+    </div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

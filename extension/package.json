@@ -1,0 +1,26 @@
+{
+  "name": "bookmrkd-extension",
+  "version": "1.0.0",
+  "private": true,
+  "description": "bookmrkd — Semantic Bookmark Organizer (Chrome extension)",
+  "author": "Minhajul Abedin <https://github.com/minhaj14d>",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/minhaj14d/bookmrkd.git"
+  },
+  "homepage": "https://github.com/minhaj14d/bookmrkd",
+  "bugs": {
+    "url": "https://github.com/minhaj14d/bookmrkd/issues"
+  },
+  "scripts": {
+    "lint": "node scripts/validate.mjs",
+    "typecheck": "tsc --noEmit -p jsconfig.json",
+    "version:sync": "node scripts/sync-version.mjs",
+    "pack": "node scripts/pack-release.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "typescript": "^5.4.0"
+  }
+}

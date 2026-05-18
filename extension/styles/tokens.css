@@ -1,0 +1,81 @@
+:root {
+  color-scheme: light;
+
+  /* Brand (conversion.png) */
+  --brand-blue: #5876f2;
+  --brand-yellow: #f2cc41;
+
+  /* Fluent / Windows 11 */
+  --fluent-accent: #0078d4;
+  --fluent-accent-hover: #106ebe;
+  --fluent-accent-pressed: #005a9e;
+  --fluent-accent-subtle: #ebf3fc;
+  --fluent-bg: #f3f3f3;
+  --fluent-card: #ffffff;
+  --fluent-card-secondary: #f9f9f9;
+  --fluent-stroke: #e5e5e5;
+  --fluent-stroke-input: #8a8a8a;
+  --fluent-text: #1a1a1a;
+  --fluent-text-secondary: #616161;
+  --fluent-text-disabled: #a0a0a0;
+  --fluent-success: #107c10;
+  --fluent-danger: #c42b1c;
+  --fluent-danger-bg: #fde7e9;
+  --fluent-shadow-2: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --fluent-shadow-8: 0 4px 8px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.1);
+  --fluent-radius-control: 4px;
+  --fluent-radius-card: 8px;
+  --fluent-control-h: 32px;
+
+  --bg: var(--fluent-bg);
+  --bg-elevated: var(--fluent-card);
+  --bg-panel: var(--fluent-card-secondary);
+  --border: var(--fluent-stroke);
+  --border-focus: var(--fluent-accent);
+  --text: var(--fluent-text);
+  --text-muted: var(--fluent-text-secondary);
+  --text-dim: var(--fluent-text-disabled);
+  --accent: var(--fluent-accent);
+  --accent-dim: var(--fluent-accent-hover);
+  --accent-pressed: var(--fluent-accent-pressed);
+  --accent-subtle: var(--fluent-accent-subtle);
+  --accent-secondary: var(--brand-yellow);
+  --accent-glow: rgba(0, 120, 212, 0.12);
+  --success: var(--fluent-success);
+  --danger: var(--fluent-danger);
+  --white: #ffffff;
+  --font-ui: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius: var(--fluent-radius-control);
+  --radius-card: var(--fluent-radius-card);
+  --popup-width: 380px;
+  --popup-max-height: 560px;
+  --transition: 0.1s ease;
+  --shadow: var(--fluent-shadow-2);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --fluent-accent: #479ef5;
+    --fluent-accent-hover: #62aef7;
+    --fluent-accent-pressed: #2886d8;
+    --fluent-accent-subtle: #1a2a3d;
+    --fluent-bg: #202020;
+    --fluent-card: #2d2d2d;
+    --fluent-card-secondary: #282828;
+    --fluent-stroke: #3d3d3d;
+    --fluent-stroke-input: #6d6d6d;
+    --fluent-text: #ffffff;
+    --fluent-text-secondary: #d6d6d6;
+    --fluent-text-disabled: #8a8a8a;
+    --fluent-danger-bg: #442726;
+    --fluent-shadow-2: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --fluent-shadow-8: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --accent-glow: rgba(71, 158, 245, 0.18);
+  }
+}
