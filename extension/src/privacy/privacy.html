@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bookmrkd — Privacy Policy</title>
+    <link rel="icon" href="/icons/conversion.png" type="image/png" />
+    <style>
+      body {
+        font-family: var(--font-sans, "Segoe UI", system-ui, sans-serif);
+        line-height: 1.6;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 24px 20px 48px;
+        color: var(--fluent-text, #1a1a1a);
+        background: var(--bg-page, #fafafa);
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 0 0 8px;
+      }
+      .meta {
+        font-size: 0.85rem;
+        color: var(--text-muted, #666);
+        margin-bottom: 24px;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin: 24px 0 8px;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+      a {
+        color: var(--fluent-accent, #0078d4);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>bookmrkd Privacy Policy</h1>
+    <p class="meta">Effective: 22 May 2026 · Extension version <span id="ver"></span></p>
+
+    <p>
+      bookmrkd is a privacy-first bookmark library for Chrome. Your saved pages, tags, and search index stay on your
+      device unless you explicitly enable optional features below.
+    </p>
+
+    <h2>Local library (default)</h2>
+    <ul>
+      <li>
+        <strong>Saved bookmarks</strong> — URL, title, tags, favicon URL, and timestamps are stored in
+        <strong>IndexedDB</strong> on your device.
+      </li>
+      <li>No bookmrkd servers receive this data. No analytics or advertising trackers run in the extension.</li>
+    </ul>
+
+    <h2>Advanced — organize Chrome bookmarks</h2>
+    <p>
+      Optional bulk organize reads Chrome’s bookmark tree or HTML you import. Results are exported for manual import;
+      live bookmarks are not modified automatically.
+    </p>
+
+    <h2>Advanced — Online mode (optional)</h2>
+    <p>
+      If you enable Online mode and save a Gemini API key, uncertain items may be sent to Google’s API as
+      <em>title + URL</em> only. Google’s privacy policy applies to that traffic.
+    </p>
+
+    <h2>Cloud sync (v1.2, not enabled in v1.1)</h2>
+    <p>
+      Future optional sync will require login and transmit library data only when you opt in. v1.1.0 does not sync to
+      any cloud service.
+    </p>
+
+    <h2>What we do not do</h2>
+    <ul>
+      <li>We do not sell your data.</li>
+      <li>We do not run analytics or external logging.</li>
+      <li>We do not upload your library unless you enable a future sync feature.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>
+      Developer: <strong>Minhajul Abedin</strong> —
+      <a href="https://github.com/minhaj14d" target="_blank" rel="noopener">github.com/minhaj14d</a>
+    </p>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
