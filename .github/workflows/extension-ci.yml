@@ -36,7 +36,10 @@ jobs:
         run: npm run version:sync
 
       - name: Verify version files match
-        run: git diff --exit-code ../VERSION manifest.json package.json lib/version.js
+        run: git diff --exit-code ../VERSION src/manifest.json package.json src/lib/version.ts
+
+      - name: Build extension
+        run: npm run build
 
       - name: Validate extension
         run: npm run lint
