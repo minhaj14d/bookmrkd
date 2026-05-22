@@ -1,13 +1,15 @@
 /** Use worker when bookmark count exceeds this (keeps small libraries on main thread). */
 export const WORKER_THRESHOLD = 2500;
 
+import OrganizeWorker from "./organize-worker?worker";
+
 /** @type {Worker|null} */
 let worker = null;
 let jobSeq = 0;
 
 function getWorker() {
   if (!worker) {
-    worker = new Worker(chrome.runtime.getURL("lib/organize-worker.js"), { type: "module" });
+    worker = new OrganizeWorker();
   }
   return worker;
 }

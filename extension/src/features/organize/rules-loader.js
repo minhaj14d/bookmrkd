@@ -9,14 +9,10 @@ const DEFAULT_CONFIG = {
 /**
  * @returns {Promise<RulesConfig>}
  */
+import builtinRules from "./rules.json";
+
 async function fetchBuiltinRules() {
-  const url = chrome.runtime.getURL("lib/rules.json");
-  const res = await fetch(url);
-  if (!res.ok) {
-    console.warn("[bookmrkd] rules.json fetch failed:", res.status);
-    return { ...DEFAULT_CONFIG };
-  }
-  const data = await res.json();
+  const data = builtinRules;
   return data && typeof data === "object" ? /** @type {RulesConfig} */ (data) : { ...DEFAULT_CONFIG };
 }
 

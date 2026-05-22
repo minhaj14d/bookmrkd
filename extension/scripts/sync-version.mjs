@@ -1,6 +1,5 @@
 /**
- * Sync semver from repo root VERSION into manifest, package.json, and lib/version.js.
- * Usage: node scripts/sync-version.mjs (from extension/)
+ * Sync semver from repo root VERSION into src/manifest.json, package.json, and src/lib/version.ts.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -15,7 +14,7 @@ if (!/^\d+\.\d+\.\d+(-[\w.-]+)?$/.test(version)) {
   process.exit(1);
 }
 
-const manifestPath = join(extRoot, "manifest.json");
+const manifestPath = join(extRoot, "src", "manifest.json");
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 manifest.version = version;
 writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
@@ -25,19 +24,16 @@ const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
 pkg.version = version;
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
-const versionJsPath = join(extRoot, "lib", "version.js");
-const versionJs = readFileSync(versionJsPath, "utf8");
+const versionTsPath = join(extRoot, "src", "lib", "version.ts");
+const versionTs = readFileSync(versionTsPath, "utf8");
 const appVersionRe = /export const APP_VERSION = ["'][^"']+["'];?/;
-if (!appVersionRe.test(versionJs)) {
-  console.error(
-    "sync-version: lib/version.js must export APP_VERSION = \"x.y.z\";"
-  );
+if (!appVersionRe.test(versionTs)) {
+  console.error('sync-version: src/lib/version.ts must export APP_VERSION = "x.y.z";');
   process.exit(1);
 }
-const next = versionJs.replace(
-  appVersionRe,
-  `export const APP_VERSION = "${version}";`
+writeFileSync(
+  versionTsPath,
+  versionTs.replace(appVersionRe, `export const APP_VERSION = "${version}";`)
 );
-writeFileSync(versionJsPath, next);
 
 console.log("sync-version: ok →", version);
