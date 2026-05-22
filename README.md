@@ -1,12 +1,12 @@
 # bookmrkd
 
 <p align="center">
-  <img src="extension/icons/conversion.png" width="96" height="96" alt="bookmrkd icon" />
+  <img src="extension/public/icons/conversion.png" width="96" height="96" alt="bookmrkd icon" />
 </p>
 
 <p align="center">
-  <strong>Semantic Bookmark Organizer</strong><br />
-  Dedupe, categorize, and export bookmarks — offline-first, optional Gemini AI.
+  <strong>Privacy-first bookmark library</strong><br />
+  Save, tag, search — offline by default. Optional bulk organize + Gemini in Advanced.
 </p>
 
 <p align="center">
@@ -21,109 +21,136 @@
 
 ---
 
-## Overview
+## Problem
 
-**bookmrkd** is a Chrome extension that cleans large bookmark libraries: exact and fuzzy dedupe, automatic folder categorization (social, work, learning, dev, shopping, and more), relevance scoring, and Netscape HTML export for re-import. Your live bookmarks are never overwritten — you review the result and import when ready.
+Chrome bookmarks are built for saving links, not for **finding** them later. There is no first-class tagging, search across tags, or a local library you control. Bulk “folders” do not fix duplicate tabs, stale “read later” piles, or cross-device capture without sending everything to a cloud service.
 
-| Mode | Behavior |
-|------|----------|
-| **Offline** | Everything runs on your device. No API key, no network required. |
-| **Online** | Same local rules first; optional **Google Gemini** (free API tier) for stubborn links. Only **title + URL** batches are sent. |
+## Solution
 
-## Screenshots
+**bookmrkd** is a Manifest V3 extension that acts as a **local-first bookmark library**:
 
-### Popup — analyze & export
+- Save the current tab with tags (popup or context menu)
+- Search and filter by title, URL, tags, and domain (options page)
+- Export/import your library as JSON (portable backup)
+- **Advanced:** optional bulk dedupe/categorize of Chrome’s bookmark tree + Netscape HTML export (v1.0 flow)
+- **No analytics, no telemetry, no data selling** — library data stays in IndexedDB on your device
 
-Browser or imported HTML, fuzzy dedupe, category breakdown, export and report.
-
-<p align="center">
-  <img src="screenshot_1.png" alt="bookmrkd popup with Offline mode, browser source, and Run analysis" width="720" />
-</p>
-
-### Settings — Offline
-
-Built-in folder rules, custom JSON, privacy-first — nothing leaves your machine.
-
-<p align="center">
-  <img src="screenshot_2.png" alt="bookmrkd settings with Offline organization mode" width="720" />
-</p>
-
-### Settings — Online (Gemini)
-
-Optional cloud assist with a free [Google AI Studio](https://aistudio.google.com/apikey) key. **Gemini 2.0 Flash** recommended.
-
-<p align="center">
-  <img src="screenshot_3.png" alt="bookmrkd settings with Online mode and Gemini model selection" width="720" />
-</p>
+```text
+Popup (save + recents)
+        ↓
+IndexedDB library  ←→  Options (search / filter / export)
+        ↓
+Advanced (organize Chrome bookmarks, optional Gemini)
+```
 
 ## Features
 
-- Exact + fuzzy URL/title dedupe  
-- 22+ built-in rules + custom JSON (merged with built-ins)  
-- Legacy host classifier (50+ patterns)  
-- Web Worker for 2,500+ bookmarks  
-- Export organized HTML + summary report  
-- In-extension privacy policy (`extension/privacy.html`)  
+| Area | v1.1.0 |
+|------|--------|
+| **Library** | Save tab, tags, favicon, URL dedupe, recent list |
+| **Search** | Title, URL, tags; filter by tag and domain |
+| **Storage** | IndexedDB (`bookmrkd_v1`); settings in `chrome.storage` |
+| **Backup** | Export/import JSON |
+| **Advanced** | Dedupe, rules, fuzzy match, HTML export, report, Gemini assist |
+| **Sync** | Not in v1.1 — planned v1.2 (Supabase, opt-in) |
 
-## Install
+## Architecture
 
-### Clone & load unpacked
+```mermaid
+flowchart TB
+  subgraph ui [UI]
+    Popup[React popup]
+    Options[React options]
+  end
+  subgraph sw [Service worker]
+    BG[background]
+  end
+  subgraph data [Data]
+    IDB[(IndexedDB)]
+    Storage[chrome.storage]
+  end
+  Popup --> IDB
+  Options --> IDB
+  Options --> Organize[organize pipeline]
+  BG --> IDB
+  Organize --> Storage
+```
+
+## Tech stack
+
+- Chrome Extension **Manifest V3**
+- **React** + **Vite** + **@crxjs/vite-plugin**
+- **IndexedDB** for the library
+- **TypeScript** (storage, UI) + legacy **ES modules** (organize pipeline)
+- Optional **Google Gemini** (Advanced only)
+
+## Privacy
+
+- **No tracking** — no analytics SDKs, no external logging
+- **No data selling** — your library is not uploaded in v1.1.0
+- **Local-first** — IndexedDB on device; works offline for library features
+- **Optional AI** — only in Advanced → Online mode; title + URL batches to Gemini
+- **Future sync** — v1.2 will be explicit opt-in ([privacy page](extension/src/privacy/privacy.html) in build)
+
+## Demo
+
+Screenshots in repo root (`screenshot_1.png`–`screenshot_3.png`) show the prior UI; v1.1 popup/options are library-first — capture new screenshots after loading `extension/dist`.
+
+## Installation
+
+### Developers
 
 ```bash
 git clone https://github.com/minhaj14d/bookmrkd.git
 cd bookmrkd/extension
 npm ci
+npm run build
 ```
 
-Chrome → **Extensions** → **Developer mode** → **Load unpacked** → select the `extension` folder.
+Chrome → **Extensions** → **Developer mode** → **Load unpacked** → select `extension/dist`.
 
 ### From a GitHub Release
 
-1. Open [Releases](https://github.com/minhaj14d/bookmrkd/releases).  
-2. Download `bookmrkd-v1.0.0-extension.zip`, extract, then **Load unpacked** on the extracted folder.
+1. Download `bookmrkd-v1.1.0-extension.zip` from [Releases](https://github.com/minhaj14d/bookmrkd/releases).
+2. Extract and **Load unpacked** on the extracted folder (must contain `manifest.json`).
 
 ### Pack `.crx` (optional)
 
-1. Open `chrome://extensions` → enable **Developer mode**.  
-2. Click **Pack extension** → choose this repo’s `extension` folder.  
-3. First time: leave private key empty (Chrome creates `.pem` + `.crx`). **Keep `.pem` secret.**  
-4. Later updates: pack again with the same `.pem`.
-
-### Quick start
-
-1. Pin **bookmrkd** → open **Settings** (gear).  
-2. Choose **Offline** or **Online** (Gemini API key if Online).  
-3. In the popup: **Run analysis** → review categories → **Export HTML**.  
-4. Chrome **Bookmark Manager** → ⋮ → **Import bookmarks**.
-
-## Build release ZIP
-
-```bash
-cd extension
-npm run pack
-```
-
-Output: `release/bookmrkd-v1.0.0-extension.zip` (version from `/VERSION`).
+Pack the **`extension/dist`** folder after `npm run build`, not the source tree.
 
 ## Development
 
 ```bash
 cd extension
-npm run lint
+npm run dev          # Vite watch
+npm run build        # dist/
+npm run lint         # validates dist + source
 npm run typecheck
-npm run version:sync   # after editing ../VERSION
+npm run version:sync # after editing ../VERSION
+npm run pack         # build + release/bookmrkd-v*.zip
 ```
+
+Version source of truth: [`VERSION`](VERSION) → `src/manifest.json`, `package.json`, `src/lib/version.ts`.
 
 ## Repository layout
 
 ```
 bookmrkd/
-├── extension/        # Chrome MV3 extension (load this folder)
-├── screenshot_*.png  # UI previews (README)
+├── extension/
+│   ├── src/           # source (React, TS, organize pipeline)
+│   ├── public/icons/  # static icons
+│   ├── dist/          # load this in Chrome (gitignored)
+│   └── scripts/       # validate, pack, sync-version
 ├── VERSION
-├── LICENSE           # GPL-3.0
+├── LICENSE            # GPL-3.0
 └── README.md
 ```
+
+## Roadmap
+
+- **v1.2** — Optional Supabase sync (auth + Postgres + RLS)
+- **v1.3** — Smarter tag suggestions / semantic search
+- **Chrome Web Store** listing (optional)
 
 ## License
 

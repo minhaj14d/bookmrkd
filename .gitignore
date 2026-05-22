@@ -52,6 +52,7 @@ extension/.DS_Store
 *.log
 logs/
 
-# Local / internal docs (only root README.md is tracked)
+# Local / internal docs (README + CHANGELOG tracked)
 *.md
 !/README.md
+!/CHANGELOG.md
