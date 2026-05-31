@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <strong>Privacy-first bookmark library</strong><br />
-  Save, tag, search — offline by default. Optional bulk organize + Gemini in Advanced.
+  <strong>AI-powered bookmark maintenance assistant</strong><br />
+  Save, tag, search — local-first AI suggestions keep your Chrome folders organized.
 </p>
 
 <p align="center">
@@ -27,12 +27,13 @@ Chrome bookmarks are built for saving links, not for **finding** them later. The
 
 ## Solution
 
-**bookmrkd** is a Manifest V3 extension that acts as a **local-first bookmark library**:
+**bookmrkd** is a Manifest V3 extension that helps you **maintain** bookmarks you already organized:
 
 - Save the current tab with tags (popup or context menu)
 - Search and filter by title, URL, tags, and domain (options page)
+- **AI Suggestions:** analyze Chrome folders, get move/duplicate/merge suggestions with confidence and reasoning — approve before anything changes
 - Export/import your library as JSON (portable backup)
-- **Advanced:** optional bulk dedupe/categorize of Chrome’s bookmark tree + Netscape HTML export (v1.0 flow)
+- **Advanced:** optional bulk dedupe/categorize + Netscape HTML export (legacy organize flow)
 - **No analytics, no telemetry, no data selling** — library data stays in IndexedDB on your device
 
 ```text
@@ -40,19 +41,22 @@ Popup (save + recents)
         ↓
 IndexedDB library  ←→  Options (search / filter / export)
         ↓
+AI Suggestions (Smart Collection Assistant)
+        ↓
 Advanced (organize Chrome bookmarks, optional Gemini)
 ```
 
 ## Features
 
-| Area | v1.1.0 |
+| Area | v2.0.0 |
 |------|--------|
 | **Library** | Save tab, tags, favicon, URL dedupe, recent list |
+| **AI Suggestions** | Health score, move/duplicate/merge suggestions, local learning, optional MiniLM/Gemini/OpenAI |
 | **Search** | Title, URL, tags; filter by tag and domain |
-| **Storage** | IndexedDB (`bookmrkd_v1`); settings in `chrome.storage` |
+| **Storage** | IndexedDB (`bookmrkd_v1` library + `bookmrkd_v2` SCA) |
 | **Backup** | Export/import JSON |
 | **Advanced** | Dedupe, rules, fuzzy match, HTML export, report, Gemini assist |
-| **Sync** | Not in v1.1 — planned v1.2 (Supabase, opt-in) |
+| **Sync** | Planned v1.2 (Supabase, opt-in) |
 
 ## Architecture
 
@@ -82,7 +86,8 @@ flowchart TB
 - **React** + **Vite** + **@crxjs/vite-plugin**
 - **IndexedDB** for the library
 - **TypeScript** (storage, UI) + legacy **ES modules** (organize pipeline)
-- Optional **Google Gemini** (Advanced only)
+- **Smart Collection Assistant** — rule-based + optional `@xenova/transformers` embeddings
+- Optional **Google Gemini / OpenAI** (user API keys, opt-in)
 
 ## Privacy
 
@@ -148,8 +153,8 @@ bookmrkd/
 
 ## Roadmap
 
+- **v2.1** — Full IndexedDB library suggestions (tag clusters)
 - **v1.2** — Optional Supabase sync (auth + Postgres + RLS)
-- **v1.3** — Smarter tag suggestions / semantic search
 - **Chrome Web Store** listing (optional)
 
 ## License

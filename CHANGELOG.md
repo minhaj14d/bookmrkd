@@ -2,6 +2,28 @@
 
 All notable changes to **bookmrkd** are documented here. Version numbers follow [SemVer](https://semver.org/). This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.0] - 2026-05-31
+
+### Added
+
+- **Smart Collection Assistant** — new **Options → AI Suggestions** tab analyzes Chrome bookmark folders and proposes moves, duplicates, folder merges/cleanup, and uncategorized items with confidence, reasoning, and preview.
+- **BookmarkClassifierProvider** abstraction — `RuleBasedProvider` (default, offline), `TransformersProvider` (local MiniLM embeddings), optional `GeminiProvider`, `OpenAIProvider`, and `DesktopBridgeProvider` (native messaging stub).
+- **Health score** (0–100) from duplicate ratio, uncategorized ratio, folder depth, and fragmentation.
+- **Local learning** — accept/reject/ignore feedback stored in IndexedDB `bookmrkd_v2` (`sca_feedback`).
+- **SCA worker** — offloads analysis for 2,500+ bookmarks (same threshold pattern as organize worker).
+- **Library tag hints (v2.1 preview)** — optional tag hygiene suggestions for IndexedDB library.
+- **Shared bookmark utilities** — `src/lib/bookmarks/` (normalize URL, dedupe, title similarity).
+- **Vitest** — unit tests for structure guard and health score.
+
+### Changed
+
+- Positioning: **AI-powered bookmark maintenance assistant** (preserve existing folders; never auto-modify).
+- Manifest v2.0 — CSP `wasm-unsafe-eval` for local embeddings; OpenAI host permission when opted in.
+
+### Preserved
+
+- **Library** tab and **Advanced** bulk organize/export unchanged.
+
 ## [1.1.0] - 2026-05-22
 
 ### Added

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import LibraryTab from "./LibraryTab";
 import AdvancedTab from "./AdvancedTab";
+import SuggestionsTab from "./SuggestionsTab";
 
-type Tab = "library" | "advanced" | "about";
+type Tab = "library" | "suggestions" | "advanced" | "about";
 
 export default function App() {
   const [tab, setTab] = useState<Tab>("library");
@@ -14,7 +15,7 @@ export default function App() {
         <img src="/icons/conversion.png" width={40} height={40} alt="" className="logo" />
         <div>
           <h1>bookmrkd</h1>
-          <p className="sub">Privacy-first bookmark library</p>
+          <p className="sub">AI-powered bookmark maintenance assistant</p>
         </div>
       </header>
 
@@ -26,6 +27,14 @@ export default function App() {
           onClick={() => setTab("library")}
         >
           Library
+        </button>
+        <button
+          type="button"
+          role="tab"
+          className={tab === "suggestions" ? "active" : ""}
+          onClick={() => setTab("suggestions")}
+        >
+          AI Suggestions
         </button>
         <button
           type="button"
@@ -47,12 +56,13 @@ export default function App() {
 
       <main className="options-main">
         {tab === "library" ? <LibraryTab /> : null}
+        {tab === "suggestions" ? <SuggestionsTab /> : null}
         {tab === "advanced" ? <AdvancedTab /> : null}
         {tab === "about" ? (
           <section className="block about-tab">
             <p className="help">
-              bookmrkd v{version} — local IndexedDB library with tagging and search. No analytics, no
-              telemetry, no data selling.
+              bookmrkd v{version} — maintain your bookmark folders with local-first AI suggestions. No
+              analytics, no telemetry, no data selling.
             </p>
             <div className="sync-placeholder">
               <strong>Cloud sync</strong>

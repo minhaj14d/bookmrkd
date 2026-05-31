@@ -5,6 +5,9 @@ import manifest from "./src/manifest.json";
 
 export default defineConfig({
   plugins: [react(), crx({ manifest })],
+  worker: {
+    format: "es",
+  },
   build: {
     outDir: "dist",
     emptyOutDir: true,

@@ -4,12 +4,20 @@ import { AI_PROVIDER_IDS, defaultModelFor, getProvider } from "../features/organ
 /** @typedef {'off'|'on'} AiMode */
 /** @typedef {'browser'|'html'} DataSource */
 
+/** @typedef {'rule'|'transformers'|'gemini'|'openai'|'desktop'} ScaProviderId */
+
 /** @typedef {object} BookmrkdSettings
  * @property {AiMode} aiMode
  * @property {AiProviderId} aiProvider
  * @property {string} aiModel
  * @property {DataSource} dataSource
  * @property {boolean} fuzzyDedupe
+ * @property {ScaProviderId} scaProvider
+ * @property {ScaProviderId} scaFallbackProvider
+ * @property {boolean} scaAutoRun
+ * @property {number} scaSemanticThreshold
+ * @property {number} scaNewFolderMinConfidence
+ * @property {number} scaMaxSuggestionsPerKind
  */
 
 const DEFAULTS = /** @type {BookmrkdSettings} */ ({
@@ -18,6 +26,12 @@ const DEFAULTS = /** @type {BookmrkdSettings} */ ({
   aiModel: "gemini-2.0-flash",
   dataSource: "browser",
   fuzzyDedupe: true,
+  scaProvider: "rule",
+  scaFallbackProvider: "rule",
+  scaAutoRun: false,
+  scaSemanticThreshold: 0.82,
+  scaNewFolderMinConfidence: 92,
+  scaMaxSuggestionsPerKind: 200,
 });
 
 /**
@@ -33,6 +47,13 @@ function migrateSettings(raw) {
   s.aiProvider = provider;
   s.aiModel = defaultModelFor(provider, model);
   if (typeof s.fuzzyDedupe !== "boolean") s.fuzzyDedupe = true;
+  const scaIds = ["rule", "transformers", "gemini", "openai", "desktop"];
+  if (!scaIds.includes(s.scaProvider)) s.scaProvider = "rule";
+  if (!scaIds.includes(s.scaFallbackProvider)) s.scaFallbackProvider = "rule";
+  if (typeof s.scaAutoRun !== "boolean") s.scaAutoRun = false;
+  if (typeof s.scaSemanticThreshold !== "number") s.scaSemanticThreshold = 0.82;
+  if (typeof s.scaNewFolderMinConfidence !== "number") s.scaNewFolderMinConfidence = 92;
+  if (typeof s.scaMaxSuggestionsPerKind !== "number") s.scaMaxSuggestionsPerKind = 200;
   return s;
 }
 
@@ -57,9 +78,37 @@ export async function saveSettings(patch) {
       aiModel: next.aiModel,
       dataSource: next.dataSource,
       fuzzyDedupe: next.fuzzyDedupe,
+      scaProvider: next.scaProvider,
+      scaFallbackProvider: next.scaFallbackProvider,
+      scaAutoRun: next.scaAutoRun,
+      scaSemanticThreshold: next.scaSemanticThreshold,
+      scaNewFolderMinConfidence: next.scaNewFolderMinConfidence,
+      scaMaxSuggestionsPerKind: next.scaMaxSuggestionsPerKind,
     },
   });
   return next;
+}
+
+/**
+ * @param {BookmrkdSettings} settings
+ * @param {Record<AiProviderId, string>} [apiKeys]
+ * @returns {import('../features/smart-collection/types').ProviderConfig}
+ */
+export function toScaProviderConfig(settings, apiKeys) {
+  return {
+    settings: {
+      scaProvider: settings.scaProvider,
+      scaFallbackProvider: settings.scaFallbackProvider,
+      scaAutoRun: settings.scaAutoRun,
+      scaSemanticThreshold: settings.scaSemanticThreshold,
+      scaNewFolderMinConfidence: settings.scaNewFolderMinConfidence,
+      scaMaxSuggestionsPerKind: settings.scaMaxSuggestionsPerKind,
+      fuzzyDedupe: settings.fuzzyDedupe,
+    },
+    apiKeys: apiKeys || {},
+    geminiModel: settings.aiModel,
+    openaiModel: "gpt-4o-mini",
+  };
 }
 
 /**

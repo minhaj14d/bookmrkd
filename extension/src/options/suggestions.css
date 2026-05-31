@@ -1,0 +1,148 @@
+.sca-tab {
+  max-width: 960px;
+}
+
+.sca-intro {
+  margin-bottom: 16px;
+}
+
+.sca-health {
+  background: var(--bg-panel, #fff);
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.sca-health h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.sca-health-bar {
+  height: 10px;
+  background: var(--bg-elevated, #eee);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sca-health-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent, #0078d4);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.sca-health-factors {
+  margin: 10px 0 0;
+}
+
+.sca-provider-panel {
+  margin-bottom: 16px;
+}
+
+.sca-network-warn {
+  color: var(--warning-text, #8a6116);
+}
+
+.sca-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sca-progress {
+  font-weight: 500;
+}
+
+.sca-section {
+  margin-top: 24px;
+}
+
+.sca-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sca-section-head h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.sca-bulk {
+  display: flex;
+  gap: 8px;
+}
+
+.sca-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sca-row {
+  border: 1px solid var(--border, #ddd);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  background: var(--bg-panel, #fff);
+}
+
+.sca-row--approved {
+  opacity: 0.75;
+  border-color: var(--success-border, #2d6a4f);
+}
+
+.sca-row--rejected,
+.sca-row--ignored {
+  opacity: 0.6;
+}
+
+.sca-row-title {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.sca-row-path {
+  margin: 0 0 6px;
+  color: var(--text-muted, #555);
+}
+
+.sca-row-meta {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--text-muted, #666);
+}
+
+.sca-row-reason {
+  margin: 0 0 10px;
+}
+
+.sca-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sca-preview-detail {
+  font-size: 11px;
+  overflow: auto;
+  max-height: 120px;
+  background: var(--bg-elevated, #f5f5f5);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.sca-status-badge {
+  font-size: 12px;
+  text-transform: capitalize;
+  color: var(--text-muted, #666);
+}

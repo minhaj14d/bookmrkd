@@ -4,6 +4,7 @@
 import { legacyClassify } from "./legacy-classify-module.js";
 import { titleSimilarity } from "./similarity.js";
 import { escapeHtml, minMaxPositive, forEachChunked } from "./utils.js";
+import { normalizeBookmarkUrl, hostKey, dedupeExact as dedupeExactLib, dedupeFuzzy as dedupeFuzzyLib } from "../../lib/bookmarks/index.ts";
 
 export { loadRulesConfig } from "./rules-loader.js";
 export { parseBookmarksHtml } from "./html-parser.js";
@@ -22,52 +23,12 @@ export { parseBookmarksHtml } from "./html-parser.js";
  * @property {string|null} fuzzyDuplicateOf
  */
 
-const TRACKING_PARAMS = new Set([
-  "utm_source",
-  "utm_medium",
-  "utm_campaign",
-  "utm_content",
-  "utm_term",
-  "gws_rd",
-  "ei",
-]);
-
-/**
- * @param {string} url
- */
+/** @param {string} url */
 export function normalizeUrl(url) {
-  const u = (url || "").trim();
-  if (!u) return "";
-  try {
-    const p = new URL(u);
-    const scheme = (p.protocol || "http:").replace(":", "").toLowerCase();
-    let host = (p.hostname || "").toLowerCase();
-    if (host.startsWith("www.")) host = host.slice(4);
-    let path = p.pathname || "/";
-    if (path !== "/" && path.endsWith("/")) path = path.slice(0, -1);
-    const params = new URLSearchParams(p.search);
-    for (const k of [...params.keys()]) {
-      if (TRACKING_PARAMS.has(k.toLowerCase())) params.delete(k);
-    }
-    const qs = params.toString();
-    return `${scheme}://${host}${path}${qs ? `?${qs}` : ""}`.toLowerCase();
-  } catch {
-    return u.toLowerCase();
-  }
+  return normalizeBookmarkUrl(url);
 }
 
-/**
- * @param {string} href
- */
-export function hostKey(href) {
-  try {
-    let h = (new URL(href).hostname || "").toLowerCase();
-    if (h.startsWith("www.")) h = h.slice(4);
-    return h;
-  } catch {
-    return "";
-  }
-}
+export { hostKey };
 
 /**
  * @param {chrome.bookmarks.BookmarkTreeNode[]} nodes
@@ -102,96 +63,14 @@ export function flattenChromeTree(nodes, path = []) {
   return out;
 }
 
-/**
- * @param {BookmarkRecord} b
- */
-function attrWeight(b) {
-  return (b.title?.length || 0) + (b.href?.length || 0) + (b.addDate ? 8 : 0);
-}
-
-/**
- * @param {BookmarkRecord[]} bookmarks
- */
+/** @param {BookmarkRecord[]} bookmarks */
 export function dedupeExact(bookmarks) {
-  /** @type {Map<string, BookmarkRecord[]>} */
-  const groups = new Map();
-  for (const bm of bookmarks) {
-    const k = normalizeUrl(bm.href);
-    if (!k) continue;
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k).push(bm);
-  }
-  /** @type {BookmarkRecord[]} */
-  const kept = [];
-  /** @type {object[]} */
-  const removed = [];
-  for (const [key, g] of groups) {
-    const best = g.reduce((a, b) =>
-      b.addDate > a.addDate || (b.addDate === a.addDate && attrWeight(b) > attrWeight(a)) ? b : a
-    );
-    kept.push(best);
-    for (const b of g) {
-      if (b !== best) {
-        removed.push({
-          norm: key,
-          removedTitle: (b.title || "").slice(0, 160),
-          keptTitle: (best.title || "").slice(0, 160),
-          path: b.originalPath.length ? b.originalPath.join(" > ") : "(root)",
-        });
-      }
-    }
-  }
-  return { kept, removed };
+  return dedupeExactLib(bookmarks);
 }
 
-/**
- * @param {BookmarkRecord[]} bookmarks
- * @param {number} titleRatioThreshold
- */
+/** @param {BookmarkRecord[]} bookmarks @param {number} titleRatioThreshold */
 export function dedupeFuzzy(bookmarks, titleRatioThreshold = 0.88) {
-  /** @type {Map<string, BookmarkRecord[]>} */
-  const byHost = new Map();
-  for (const bm of bookmarks) {
-    const h = hostKey(bm.href);
-    if (!byHost.has(h)) byHost.set(h, []);
-    byHost.get(h).push(bm);
-  }
-  /** @type {BookmarkRecord[]} */
-  const keptAll = [];
-  /** @type {object[]} */
-  const fuzzyLog = [];
-  for (const [host, group] of byHost) {
-    if (group.length < 2) {
-      keptAll.push(...group);
-      continue;
-    }
-    group.sort((a, b) => b.addDate - a.addDate);
-    /** @type {BookmarkRecord[]} */
-    const kept = [];
-    for (const bm of group) {
-      /** @type {BookmarkRecord|null} */
-      let dupOf = null;
-      for (const k of kept) {
-        if (titleSimilarity(bm.title, k.title) >= titleRatioThreshold) {
-          dupOf = k;
-          break;
-        }
-      }
-      if (dupOf) {
-        bm.fuzzyDuplicateOf = normalizeUrl(dupOf.href);
-        fuzzyLog.push({
-          host,
-          removed: (bm.title || "").slice(0, 120),
-          similarTo: (dupOf.title || "").slice(0, 120),
-          ratioThreshold: titleRatioThreshold,
-        });
-        continue;
-      }
-      kept.push(bm);
-    }
-    keptAll.push(...kept);
-  }
-  return { kept: keptAll, fuzzyLog };
+  return dedupeFuzzyLib(bookmarks, titleRatioThreshold);
 }
 
 /**
