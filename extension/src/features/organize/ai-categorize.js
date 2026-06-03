@@ -89,7 +89,13 @@ async function aiCategorizeGemini(items, apiKey, model) {
   if (!res.ok) {
     const msg = data?.error?.message || raw.slice(0, 220);
     if (res.status === 400) return { map: new Map(), error: "Invalid Gemini API key" };
-    if (res.status === 429) return { map: new Map(), error: "Gemini quota exceeded" };
+    if (res.status === 429 || res.status === 503) {
+      return {
+        map: new Map(),
+        error:
+          "Google AI Studio rate limit (429). Wait a few minutes or use Local rules / MiniLM instead of Online AI.",
+      };
+    }
     return { map: new Map(), error: `Gemini HTTP ${res.status}: ${msg}` };
   }
   const parts = data?.candidates?.[0]?.content?.parts || [];

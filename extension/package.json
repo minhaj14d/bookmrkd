@@ -17,7 +17,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "node scripts/validate.mjs",
+    "build:firefox": "node scripts/build-firefox.mjs",
+    "build:all": "npm run build && npm run build:firefox",
+    "firefox:run": "web-ext run -s dist-firefox --firefox-profile bookmrkd-dev",
+    "lint": "node scripts/validate.mjs chromium",
+    "lint:firefox": "node scripts/validate.mjs firefox",
+    "lint:all": "npm run lint && npm run lint:firefox",
     "typecheck": "tsc --noEmit",
     "version:sync": "node scripts/sync-version.mjs",
     "pack": "node scripts/pack-release.mjs",
@@ -36,7 +41,8 @@
     "@vitejs/plugin-react": "4.7.0",
     "typescript": "^5.4.0",
     "tsx": "^4.19.2",
-    "vite": "6.4.2"
+    "vite": "6.4.2",
+    "web-ext": "^8.3.0"
   },
   "overrides": {
     "rollup": "2.80.0"

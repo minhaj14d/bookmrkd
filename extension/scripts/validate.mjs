@@ -3,7 +3,8 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const extRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
-const distRoot = join(extRoot, "dist");
+const target = process.argv[2] || process.env.BUILD_TARGET || "chromium";
+const distRoot = join(extRoot, target === "firefox" ? "dist-firefox" : "dist");
 const srcManifestPath = join(extRoot, "src", "manifest.json");
 
 let failed = 0;
@@ -14,14 +15,24 @@ function fail(msg) {
 }
 
 if (!existsSync(distRoot)) {
-  fail("dist/ missing — run npm run build first");
+  fail(`${distRoot.replace(extRoot, "").slice(1)}/ missing — run npm run build${target === "firefox" ? ":firefox" : ""} first`);
 } else {
   const manifestPath = join(distRoot, "manifest.json");
   if (!existsSync(manifestPath)) {
-    fail("dist/manifest.json missing");
+    fail(`manifest.json missing in ${distRoot}`);
   } else {
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
     if (manifest.manifest_version !== 3) fail("manifest_version must be 3");
+
+    if (target === "firefox") {
+      const gecko = manifest.browser_specific_settings?.gecko;
+      if (!gecko?.id) fail("Firefox build missing browser_specific_settings.gecko.id");
+      const scripts = manifest.background?.scripts;
+      if (!scripts?.includes("background.js")) {
+        fail("Firefox build must use background.scripts: [\"background.js\"]");
+      }
+      if (!existsSync(join(distRoot, "background.js"))) fail("MISSING background.js in dist-firefox");
+    }
 
     const requiredDist = [
       "manifest.json",
@@ -30,13 +41,14 @@ if (!existsSync(distRoot)) {
       "icons/icon128.png",
     ];
     for (const rel of requiredDist) {
-      if (!existsSync(join(distRoot, rel))) fail(`MISSING dist/${rel}`);
+      if (!existsSync(join(distRoot, rel))) fail(`MISSING ${rel} in ${distRoot}`);
     }
   }
 }
 
 const srcRequired = [
   "src/manifest.json",
+  "src/manifest.firefox.json",
   "src/popup/index.html",
   "src/options/index.html",
   "src/background/index.ts",
@@ -76,4 +88,4 @@ try {
 }
 
 if (failed) process.exit(1);
-console.log("validate: ok");
+console.log(`validate: ok (${target})`);

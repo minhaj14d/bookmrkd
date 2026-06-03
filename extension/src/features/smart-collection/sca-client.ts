@@ -1,6 +1,6 @@
 import type { BookmarkRecord } from "../../lib/bookmarks/types";
 import type { AnalysisJob, ProviderConfig } from "./types";
-import { loadBookmarksFromSource } from "./run-analysis";
+import { loadBookmarksFromSource, runAnalysis, type AnalysisSource } from "./run-analysis";
 import { saveJob, saveSuggestions } from "../../storage/sca-idb";
 
 export const SCA_WORKER_THRESHOLD = 2500;
@@ -55,7 +55,7 @@ export function shouldUseScaWorker(count: number): boolean {
 
 export async function runAnalysisWithWorker(
   config: ProviderConfig,
-  source: "browser" | "html" = "browser",
+  source: AnalysisSource = "browser",
   onProgress?: (job: AnalysisJob) => void
 ): Promise<AnalysisJob> {
   const jobId = `job-${Date.now()}`;
@@ -71,7 +71,7 @@ export async function runAnalysisWithWorker(
   onProgress?.(job);
 
   try {
-    const bookmarks = await loadBookmarksFromSource(source);
+    const { bookmarks } = await loadBookmarksFromSource(source);
     job.bookmarkCount = bookmarks.length;
     onProgress?.({ ...job, progress: 0.05 });
 
@@ -79,7 +79,6 @@ export async function runAnalysisWithWorker(
     if (shouldUseScaWorker(bookmarks.length)) {
       result = await runInWorker(bookmarks, config, jobId);
     } else {
-      const { runAnalysis } = await import("./run-analysis");
       return runAnalysis(config, source, onProgress);
     }
 
@@ -104,17 +103,17 @@ export async function runAnalysisWithWorker(
 
 export async function runAnalysisAuto(
   config: ProviderConfig,
-  source: "browser" | "html" = "browser",
+  source: AnalysisSource = "browser",
   onProgress?: (job: AnalysisJob) => void
 ): Promise<AnalysisJob> {
-  const bookmarks = await loadBookmarksFromSource(source);
+  const { bookmarks } = await loadBookmarksFromSource(source);
   const workerOk =
     shouldUseScaWorker(bookmarks.length) &&
+    source !== "raindrop" &&
     config.settings.scaProvider === "rule" &&
     config.settings.scaFallbackProvider === "rule";
   if (workerOk) {
     return runAnalysisWithWorker(config, source, onProgress);
   }
-  const { runAnalysis } = await import("./run-analysis");
   return runAnalysis(config, source, onProgress);
 }

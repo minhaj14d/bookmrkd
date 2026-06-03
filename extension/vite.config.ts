@@ -4,7 +4,10 @@ import { crx } from "@crxjs/vite-plugin";
 import manifest from "./src/manifest.json";
 
 export default defineConfig({
-  plugins: [react(), crx({ manifest })],
+  // Load VITE_* from repo root `.env` (see ../.env.example).
+  envDir: "..",
+  envPrefix: "VITE_",
+  plugins: [react(), crx({ manifest, browser: "chrome" })],
   worker: {
     format: "es",
   },

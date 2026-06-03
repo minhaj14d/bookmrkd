@@ -44,3 +44,12 @@ export async function loadRulesConfig() {
 
   return builtIn;
 }
+
+/**
+ * Built-in rules JSON for the Advanced rules editor (single import path for bundler).
+ * @returns {Promise<string>}
+ */
+export async function getBuiltinRulesEditorText() {
+  const builtIn = await fetchBuiltinRules();
+  return `${JSON.stringify(builtIn, null, 2)}\n`;
+}

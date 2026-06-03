@@ -8,6 +8,7 @@ const SECTION_TITLES: Record<SuggestionKind, string> = {
   folder_split: "Folder Split Suggestions",
   folder_cleanup: "Folder Cleanup Suggestions",
   uncategorized: "Uncategorized Suggestions",
+  tag: "Tag Suggestions",
   leave_unchanged: "Unchanged",
 };
 

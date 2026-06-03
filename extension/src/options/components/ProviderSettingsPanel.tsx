@@ -38,6 +38,18 @@ export default function ProviderSettingsPanel({
           Selected provider may send bookmark titles and URLs to a third-party API. Keys stay on your device.
         </p>
       ) : null}
+      {scaProvider === "gemini" ? (
+        <p className="help sca-network-warn">
+          Free Gemini keys often hit <strong>429 too many requests</strong>. Use{" "}
+          <strong>Local embeddings (MiniLM)</strong> for Raindrop analysis without API limits.
+        </p>
+      ) : null}
+      {scaProvider === "transformers" ? (
+        <p className="help sca-embeddings-note">
+          First use downloads the MiniLM model (~25&nbsp;MB from huggingface.co, then cached locally). Keep this
+          tab open until analysis finishes. For very large libraries, use Local rules instead.
+        </p>
+      ) : null}
       {scaProvider === "desktop" ? (
         <p className="help">
           Install the bookmrkd native host (<code>io.bookmrkd.llm_bridge</code>) to score via local GGUF.

@@ -3,17 +3,22 @@
   "name": "bookmrkd — Bookmark Library",
   "short_name": "bookmrkd",
   "version": "2.0.0",
-  "description": "AI-powered bookmark maintenance assistant. Local-first suggestions for your Chrome folders.",
+  "description": "AI-powered bookmark maintenance assistant. Local-first suggestions for your bookmark folders.",
   "permissions": [
     "bookmarks",
     "storage",
     "downloads",
     "tabs",
-    "contextMenus"
+    "contextMenus",
+    "identity"
   ],
   "host_permissions": [
     "https://generativelanguage.googleapis.com/*",
-    "https://api.openai.com/*"
+    "https://api.openai.com/*",
+    "https://huggingface.co/*",
+    "https://cdn.jsdelivr.net/*",
+    "https://api.raindrop.io/*",
+    "https://raindrop.io/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"

@@ -5,8 +5,9 @@ import { legacyClassify } from "./legacy-classify-module.js";
 import { titleSimilarity } from "./similarity.js";
 import { escapeHtml, minMaxPositive, forEachChunked } from "./utils.js";
 import { normalizeBookmarkUrl, hostKey, dedupeExact as dedupeExactLib, dedupeFuzzy as dedupeFuzzyLib } from "../../lib/bookmarks/index.ts";
+import { normalizeBookmarkTreeRoots, bookmarkFolderSegment } from "../../lib/bookmarks/tree-utils.ts";
 
-export { loadRulesConfig } from "./rules-loader.js";
+export { loadRulesConfig, getBuiltinRulesEditorText } from "./rules-loader.js";
 export { parseBookmarksHtml } from "./html-parser.js";
 
 /** @typedef {object} BookmarkRecord
@@ -38,7 +39,8 @@ export { hostKey };
 export function flattenChromeTree(nodes, path = []) {
   /** @type {BookmarkRecord[]} */
   const out = [];
-  for (const node of nodes || []) {
+  const level = path.length === 0 ? normalizeBookmarkTreeRoots(nodes || []) : nodes || [];
+  for (const node of level) {
     if (node.url) {
       const url = node.url.trim();
       if (!url || url.toLowerCase().startsWith("javascript:")) continue;
@@ -56,8 +58,9 @@ export function flattenChromeTree(nodes, path = []) {
         fuzzyDuplicateOf: null,
       });
     } else if (node.children) {
-      const folderTitle = (node.title || "").trim() || "Untitled";
-      out.push(...flattenChromeTree(node.children, [...path, folderTitle]));
+      const seg = bookmarkFolderSegment(node);
+      const nextPath = seg ? [...path, seg] : path;
+      out.push(...flattenChromeTree(node.children, nextPath));
     }
   }
   return out;

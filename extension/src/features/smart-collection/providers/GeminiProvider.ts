@@ -1,3 +1,4 @@
+import { isGeminiRateLimitError } from "../../../lib/gemini-errors";
 import type { BookmarkRecord } from "../../../lib/bookmarks/types";
 import type { FolderProfile, ProviderConfig } from "../types";
 import type { BookmarkClassifierProvider, FolderScoreResult } from "./BookmarkClassifierProvider";
@@ -10,6 +11,8 @@ export class GeminiProvider implements BookmarkClassifierProvider {
 
   private config: ProviderConfig | null = null;
   private fallback = new RuleBasedProvider();
+  /** After 429, skip Gemini calls for the rest of this analysis run. */
+  private rateLimited = false;
 
   async init(config: ProviderConfig): Promise<void> {
     this.config = config;
@@ -27,7 +30,7 @@ export class GeminiProvider implements BookmarkClassifierProvider {
   ): Promise<FolderScoreResult> {
     const rule = await this.fallback.scoreBookmarkFolder(bookmark, folder, neighbors);
     const key = this.config?.apiKeys?.gemini;
-    if (!key?.trim()) return rule;
+    if (!key?.trim() || this.rateLimited) return rule;
 
     try {
       const folderName = folder.segments[folder.segments.length - 1] || "";
@@ -44,7 +47,10 @@ URL: ${bookmark.href}`;
           generationConfig: { temperature: 0.1, maxOutputTokens: 128 },
         }),
       });
-      if (!res.ok) return rule;
+      if (!res.ok) {
+        if (res.status === 429 || res.status === 503) this.rateLimited = true;
+        return rule;
+      }
       const data = await res.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
       const m = text.match(/\{[\s\S]*\}/);
@@ -55,12 +61,14 @@ URL: ${bookmark.href}`;
         score: score * 0.6 + rule.score * 0.4,
         reasoning: parsed.reason || rule.reasoning,
       };
-    } catch {
+    } catch (e) {
+      if (isGeminiRateLimitError(e)) this.rateLimited = true;
       return rule;
     }
   }
 
   async dispose(): Promise<void> {
+    this.rateLimited = false;
     await this.fallback.dispose();
   }
 }

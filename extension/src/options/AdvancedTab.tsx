@@ -3,6 +3,7 @@ import {
   flattenChromeTree,
   organizeBookmarks,
   loadRulesConfig,
+  getBuiltinRulesEditorText,
   buildFolderTreeHtml,
   emitNetscapeHtml,
   buildReportMarkdown,
@@ -138,8 +139,7 @@ export default function AdvancedTab() {
   };
 
   const loadBuiltinRules = async () => {
-    const mod = await import("../features/organize/rules.json");
-    setCustomRules(`${JSON.stringify(mod.default ?? mod, null, 2)}\n`);
+    setCustomRules(await getBuiltinRulesEditorText());
   };
 
   return (

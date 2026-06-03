@@ -1,12 +1,16 @@
 import { flattenChromeTree } from "../organize/organizer.js";
 import { parseBookmarksHtml } from "../organize/html-parser.js";
 import { loadImportHtml } from "../../lib/settings.js";
+import { loadRaindropBookmarks } from "../raindrop/load-bookmarks.js";
+import { isRaindropConnected } from "../raindrop/storage.js";
 import { saveJob, saveSuggestions } from "../../storage/sca-idb";
 import { buildAnalysisContext } from "./analyzer";
 import { computeHealthScore } from "./health-score";
 import { createProviderStack } from "./providers/provider-registry";
 import { runSuggestionEngine } from "./suggestion-engine";
-import type { AnalysisJob, ProviderConfig, ScaSettings } from "./types";
+import type { AnalysisJob, ProviderConfig } from "./types";
+
+export type AnalysisSource = "browser" | "html" | "raindrop";
 
 export async function loadChromeBookmarks(): Promise<import("../../lib/bookmarks/types").BookmarkRecord[]> {
   const tree = await chrome.bookmarks.getTree();
@@ -14,19 +18,33 @@ export async function loadChromeBookmarks(): Promise<import("../../lib/bookmarks
 }
 
 export async function loadBookmarksFromSource(
-  source: "browser" | "html"
-): Promise<import("../../lib/bookmarks/types").BookmarkRecord[]> {
+  source: AnalysisSource,
+  onStatus?: (message: string) => void
+): Promise<{
+  bookmarks: import("../../lib/bookmarks/types").BookmarkRecord[];
+  pathToCollectionId?: Record<string, number>;
+}> {
+  if (source === "raindrop") {
+    if (!(await isRaindropConnected())) {
+      throw new Error("Connect Raindrop first (AI Suggestions → Raindrop section).");
+    }
+    const result = await loadRaindropBookmarks(onStatus);
+    return {
+      bookmarks: result.bookmarks,
+      pathToCollectionId: result.pathToCollectionId,
+    };
+  }
   if (source === "html") {
     const { html } = await loadImportHtml();
     if (!html) throw new Error("Import HTML in Advanced settings first.");
-    return parseBookmarksHtml(html);
+    return { bookmarks: parseBookmarksHtml(html) };
   }
-  return loadChromeBookmarks();
+  return { bookmarks: await loadChromeBookmarks() };
 }
 
 export async function runAnalysis(
   config: ProviderConfig,
-  source: "browser" | "html" = "browser",
+  source: AnalysisSource = "browser",
   onProgress?: (job: AnalysisJob) => void
 ): Promise<AnalysisJob> {
   const jobId = `job-${Date.now()}`;
@@ -42,7 +60,10 @@ export async function runAnalysis(
   onProgress?.(job);
 
   try {
-    const bookmarks = await loadBookmarksFromSource(source);
+    const { bookmarks, pathToCollectionId } = await loadBookmarksFromSource(source, (message) => {
+      job.statusMessage = message;
+      onProgress?.({ ...job });
+    });
     job.bookmarkCount = bookmarks.length;
     onProgress?.({ ...job, progress: 0.05 });
 
@@ -52,10 +73,12 @@ export async function runAnalysis(
       providers,
       config.settings,
       jobId,
-      (p) => {
-        job.progress = 0.1 + p * 0.85;
+      (p, message) => {
+        job.progress = p;
+        if (message) job.statusMessage = message;
         onProgress?.({ ...job });
-      }
+      },
+      pathToCollectionId
     );
 
     for (const p of providers) await p.dispose();
@@ -74,6 +97,7 @@ export async function runAnalysis(
     job.state = "done";
     job.progress = 1;
     job.finishedAt = Date.now();
+    job.statusMessage = undefined;
 
     await saveSuggestions(engine.suggestions);
     await saveJob(job);

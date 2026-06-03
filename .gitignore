@@ -23,12 +23,15 @@ extension/node_modules/
 
 # Build & packaging
 dist/
+extension/dist/
+extension/dist-firefox/
 build/
 out/
 release/
 *.crx
 *.pem
 *.zip
+*.env
 
 # OS & editors
 .DS_Store

@@ -1,8 +1,27 @@
 import { titleSimilarity } from "../../lib/bookmarks/title-similarity";
 import type { FolderProfile } from "./types";
 
+export const CATCH_ALL_FOLDER_NAMES = new Set([
+  "other bookmarks",
+  "unsorted",
+  "uncategorized",
+  "bookmark bar",
+  "bookmarks bar",
+]);
+
 export function pathKey(segments: string[]): string {
   return segments.join(" > ");
+}
+
+export function isCatchAllFolderSegments(segments: string[]): boolean {
+  const last = (segments[segments.length - 1] || "").toLowerCase();
+  return CATCH_ALL_FOLDER_NAMES.has(last);
+}
+
+export function isUncategorizedBookmarkPath(path: string[]): boolean {
+  if (!path.length) return true;
+  const last = (path[path.length - 1] || "").toLowerCase();
+  return CATCH_ALL_FOLDER_NAMES.has(last);
 }
 
 export function folderNameDistance(a: string, b: string): number {

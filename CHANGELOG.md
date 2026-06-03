@@ -6,6 +6,7 @@ All notable changes to **bookmrkd** are documented here. Version numbers follow 
 
 ### Added
 
+- **Firefox build** — `npm run build:firefox` → `dist-firefox/` with `browser_specific_settings.gecko`; release zips `*-chromium.zip` and `*-firefox.zip`.
 - **Smart Collection Assistant** — new **Options → AI Suggestions** tab analyzes Chrome bookmark folders and proposes moves, duplicates, folder merges/cleanup, and uncategorized items with confidence, reasoning, and preview.
 - **BookmarkClassifierProvider** abstraction — `RuleBasedProvider` (default, offline), `TransformersProvider` (local MiniLM embeddings), optional `GeminiProvider`, `OpenAIProvider`, and `DesktopBridgeProvider` (native messaging stub).
 - **Health score** (0–100) from duplicate ratio, uncategorized ratio, folder depth, and fragmentation.

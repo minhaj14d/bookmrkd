@@ -2,7 +2,7 @@ import { AI_PROVIDER_IDS, defaultModelFor, getProvider } from "../features/organ
 
 /** @typedef {import('./ai-providers.js').AiProviderId} AiProviderId */
 /** @typedef {'off'|'on'} AiMode */
-/** @typedef {'browser'|'html'} DataSource */
+/** @typedef {'browser'|'html'|'raindrop'} DataSource */
 
 /** @typedef {'rule'|'transformers'|'gemini'|'openai'|'desktop'} ScaProviderId */
 
@@ -18,6 +18,10 @@ import { AI_PROVIDER_IDS, defaultModelFor, getProvider } from "../features/organ
  * @property {number} scaSemanticThreshold
  * @property {number} scaNewFolderMinConfidence
  * @property {number} scaMaxSuggestionsPerKind
+ * @property {number} autoTagMaxTags
+ * @property {boolean} autoTagUntaggedOnly
+ * @property {number} autoTagMaxBookmarks
+ * @property {'local'|'gemini'|'auto'} autoTagProvider
  */
 
 const DEFAULTS = /** @type {BookmrkdSettings} */ ({
@@ -32,6 +36,10 @@ const DEFAULTS = /** @type {BookmrkdSettings} */ ({
   scaSemanticThreshold: 0.82,
   scaNewFolderMinConfidence: 92,
   scaMaxSuggestionsPerKind: 200,
+  autoTagMaxTags: 5,
+  autoTagUntaggedOnly: true,
+  autoTagMaxBookmarks: 200,
+  autoTagProvider: "local",
 });
 
 /**
@@ -47,6 +55,8 @@ function migrateSettings(raw) {
   s.aiProvider = provider;
   s.aiModel = defaultModelFor(provider, model);
   if (typeof s.fuzzyDedupe !== "boolean") s.fuzzyDedupe = true;
+  const ds = String(s.dataSource || "browser");
+  s.dataSource = ds === "html" || ds === "raindrop" ? ds : "browser";
   const scaIds = ["rule", "transformers", "gemini", "openai", "desktop"];
   if (!scaIds.includes(s.scaProvider)) s.scaProvider = "rule";
   if (!scaIds.includes(s.scaFallbackProvider)) s.scaFallbackProvider = "rule";
@@ -54,6 +64,11 @@ function migrateSettings(raw) {
   if (typeof s.scaSemanticThreshold !== "number") s.scaSemanticThreshold = 0.82;
   if (typeof s.scaNewFolderMinConfidence !== "number") s.scaNewFolderMinConfidence = 92;
   if (typeof s.scaMaxSuggestionsPerKind !== "number") s.scaMaxSuggestionsPerKind = 200;
+  if (typeof s.autoTagMaxTags !== "number") s.autoTagMaxTags = 5;
+  if (typeof s.autoTagUntaggedOnly !== "boolean") s.autoTagUntaggedOnly = true;
+  if (typeof s.autoTagMaxBookmarks !== "number") s.autoTagMaxBookmarks = 200;
+  const atp = String(s.autoTagProvider || "local");
+  s.autoTagProvider = atp === "gemini" || atp === "auto" ? atp : "local";
   return s;
 }
 
@@ -84,6 +99,10 @@ export async function saveSettings(patch) {
       scaSemanticThreshold: next.scaSemanticThreshold,
       scaNewFolderMinConfidence: next.scaNewFolderMinConfidence,
       scaMaxSuggestionsPerKind: next.scaMaxSuggestionsPerKind,
+      autoTagMaxTags: next.autoTagMaxTags,
+      autoTagUntaggedOnly: next.autoTagUntaggedOnly,
+      autoTagMaxBookmarks: next.autoTagMaxBookmarks,
+      autoTagProvider: next.autoTagProvider,
     },
   });
   return next;

@@ -30,7 +30,14 @@ export default function SuggestionRow({
     <article className={`sca-row sca-row--${s.status}`}>
       <div className="sca-row-main">
         <strong className="sca-row-title">{s.preview.title}</strong>
-        {s.kind === "move" && to ? (
+        {s.kind === "tag" ? (
+          <p className="sca-row-path">
+            {s.preview.existingTags?.length ? (
+              <>Current: {s.preview.existingTags.join(", ")} · </>
+            ) : null}
+            <strong>Add:</strong> {(s.preview.suggestedTags || []).join(", ")}
+          </p>
+        ) : s.kind === "move" && to ? (
           <p className="sca-row-path">
             {from} → {to}
           </p>

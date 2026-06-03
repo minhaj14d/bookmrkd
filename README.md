@@ -13,6 +13,7 @@
   <a href="https://github.com/minhaj14d/bookmrkd/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue.svg" alt="GPL-3.0" /></a>
   <a href="https://github.com/minhaj14d/bookmrkd/releases"><img src="https://img.shields.io/github/v/release/minhaj14d/bookmrkd?label=release" alt="release" /></a>
   <img src="https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white" alt="MV3" />
+  <img src="https://img.shields.io/badge/Firefox-MV3-FF7139?logo=firefoxbrowser&logoColor=white" alt="Firefox MV3" />
 </p>
 
 <p align="center">
@@ -82,7 +83,7 @@ flowchart TB
 
 ## Tech stack
 
-- Chrome Extension **Manifest V3**
+- **Manifest V3** — Chromium (Chrome, Edge, Brave) and Firefox
 - **React** + **Vite** + **@crxjs/vite-plugin**
 - **IndexedDB** for the library
 - **TypeScript** (storage, UI) + legacy **ES modules** (organize pipeline)
@@ -109,30 +110,38 @@ Screenshots in repo root (`screenshot_1.png`–`screenshot_3.png`) show the prio
 git clone https://github.com/minhaj14d/bookmrkd.git
 cd bookmrkd/extension
 npm ci
-npm run build
+npm run build          # Chromium → extension/dist
+npm run build:firefox  # Firefox    → extension/dist-firefox
+# or both:
+npm run build:all
 ```
 
-Chrome → **Extensions** → **Developer mode** → **Load unpacked** → select `extension/dist`.
+**Chrome / Chromium:** Extensions → **Developer mode** → **Load unpacked** → `extension/dist`.
+
+**Firefox:** `about:debugging` → **This Firefox** → **Load Temporary Add-on** → pick `extension/dist-firefox/manifest.json`.
 
 ### From a GitHub Release
 
-1. Download `bookmrkd-v1.1.0-extension.zip` from [Releases](https://github.com/minhaj14d/bookmrkd/releases).
-2. Extract and **Load unpacked** on the extracted folder (must contain `manifest.json`).
+1. Download `bookmrkd-v{version}-chromium.zip` or `bookmrkd-v{version}-firefox.zip` from [Releases](https://github.com/minhaj14d/bookmrkd/releases).
+2. Extract and load as above (folder must contain `manifest.json`).
 
-### Pack `.crx` (optional)
+### Pack `.crx` (optional, Chromium only)
 
-Pack the **`extension/dist`** folder after `npm run build`, not the source tree.
+Pack **`extension/dist`** after `npm run build`, not the source tree.
 
 ## Development
 
 ```bash
 cd extension
 npm run dev          # Vite watch
-npm run build        # dist/
-npm run lint         # validates dist + source
+npm run build        # dist/ (Chromium)
+npm run build:firefox # dist-firefox/
+npm run build:all    # both
+npm run lint         # validates dist/ (set BUILD_TARGET=firefox for dist-firefox)
 npm run typecheck
 npm run version:sync # after editing ../VERSION
-npm run pack         # build + release/bookmrkd-v*.zip
+npm run pack         # zips chromium + firefox → release/
+npm run firefox:run  # web-ext dev profile (after build:firefox)
 ```
 
 Version source of truth: [`VERSION`](VERSION) → `src/manifest.json`, `package.json`, `src/lib/version.ts`.
@@ -144,7 +153,8 @@ bookmrkd/
 ├── extension/
 │   ├── src/           # source (React, TS, organize pipeline)
 │   ├── public/icons/  # static icons
-│   ├── dist/          # load this in Chrome (gitignored)
+│   ├── dist/          # Chromium build (gitignored)
+│   ├── dist-firefox/  # Firefox build (gitignored)
 │   └── scripts/       # validate, pack, sync-version
 ├── VERSION
 ├── LICENSE            # GPL-3.0

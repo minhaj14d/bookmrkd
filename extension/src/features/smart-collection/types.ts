@@ -9,6 +9,7 @@ export type SuggestionKind =
   | "folder_split"
   | "folder_cleanup"
   | "uncategorized"
+  | "tag"
   | "leave_unchanged";
 
 export type SuggestionStatus = "pending" | "approved" | "rejected" | "ignored";
@@ -22,6 +23,18 @@ export interface SuggestionPreview {
   mergePaths?: string[][];
   folderLabel?: string;
   duplicateOfChromeId?: string | null;
+  /** Raindrop bookmark id (numeric). */
+  raindropItemId?: number;
+  targetRaindropCollectionId?: number;
+  raindropCollectionId?: number;
+  /** [fromCollectionId, toCollectionId] */
+  mergeRaindropCollectionIds?: [number, number];
+  /** Tags to add (auto-tag). */
+  suggestedTags?: string[];
+  existingTags?: string[];
+  /** bookmrkd Library entry id */
+  libraryId?: string;
+  tagSource?: "raindrop" | "library";
 }
 
 export interface Suggestion {
@@ -62,6 +75,7 @@ export interface AnalysisJob {
   startedAt: number;
   finishedAt?: number;
   error?: string;
+  statusMessage?: string;
 }
 
 export interface HealthFactors {
