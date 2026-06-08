@@ -42,7 +42,7 @@
     "typescript": "^5.4.0",
     "tsx": "^4.19.2",
     "vite": "6.4.2",
-    "web-ext": "^8.3.0"
+    "web-ext": "^10.3.0"
   },
   "overrides": {
     "rollup": "2.80.0"
