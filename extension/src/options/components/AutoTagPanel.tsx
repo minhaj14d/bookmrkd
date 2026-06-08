@@ -2,6 +2,7 @@ import { useState } from "react";
 import { runAutoTagSuggestions } from "../../features/auto-tag/run-auto-tag";
 import type { AutoTagProviderId, TagTargetSource } from "../../features/auto-tag/types";
 import { saveSuggestions } from "../../storage/sca-idb";
+import { isRaindropFeatureAvailable } from "../../features/raindrop/env-config";
 import { hasApiKey, keyHelpUrl, loadApiKeys, saveSettings } from "../../lib/settings.js";
 import type { Suggestion } from "../../features/smart-collection/types";
 
@@ -97,8 +98,9 @@ export default function AutoTagPanel({
     }
   };
 
-  const canRaindrop = raindropConnected;
-  const showRaindrop = dataSource === "raindrop" || canRaindrop;
+  const raindropAvailable = isRaindropFeatureAvailable();
+  const canRaindrop = raindropAvailable && raindropConnected;
+  const showRaindrop = raindropAvailable && (dataSource === "raindrop" || canRaindrop);
   const provider = settings.autoTagProvider || "local";
   const selectedHint = PROVIDER_OPTIONS.find((o) => o.id === provider)?.hint;
 
@@ -106,9 +108,7 @@ export default function AutoTagPanel({
     <section className="sca-autotag-panel block">
       <h3 className="block-title">Auto-tag</h3>
       <p className="help">
-        Suggests Raindrop-style tags for search. Nothing is written until you approve each suggestion.
-        If Google AI Studio shows <strong>429 too many requests</strong>, use <strong>Local (MiniLM)</strong>{" "}
-        — no API limits.
+        Suggests tags for search and filtering. Nothing is written until you approve each suggestion.
       </p>
 
       <fieldset className="sca-data-source sca-data-source--compact">

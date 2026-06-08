@@ -8,14 +8,15 @@ type Tab = "library" | "suggestions" | "advanced" | "about";
 export default function App() {
   const [tab, setTab] = useState<Tab>("library");
   const version = chrome.runtime.getManifest().version;
+  const privacyUrl = chrome.runtime.getURL("src/privacy/privacy.html");
 
   return (
-    <div className="shell">
+    <div className="options-shell">
       <header className="top">
         <img src="/icons/conversion.png" width={40} height={40} alt="" className="logo" />
         <div>
           <h1>bookmrkd</h1>
-          <p className="sub">AI-powered bookmark maintenance assistant</p>
+          <p className="sub">Bookmark library &amp; maintenance</p>
         </div>
       </header>
 
@@ -60,24 +61,54 @@ export default function App() {
         {tab === "advanced" ? <AdvancedTab /> : null}
         {tab === "about" ? (
           <section className="block about-tab">
+            <p className="about-version">bookmrkd v{version}</p>
             <p className="help">
-              bookmrkd v{version} — maintain your bookmark folders with local-first AI suggestions. No
-              analytics, no telemetry, no data selling.
+              Save, tag, and search bookmarks locally. AI suggestions help tidy folders — you approve every
+              change.
             </p>
-            <div className="sync-placeholder">
-              <strong>Cloud sync</strong>
-              <p>Coming in v1.2 (Supabase auth + Postgres). Your library stays on-device until you opt in.</p>
+
+            <div className="about-credits">
+              <p className="about-name">Minhajul Abedin</p>
+              <p className="help">Copyright © 2026 Minhajul Abedin</p>
+              <p className="help">
+                Licensed under{" "}
+                <a
+                  href="https://www.gnu.org/licenses/gpl-3.0.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GNU General Public License v3.0
+                </a>
+              </p>
+              <p className="help">
+                <a
+                  href="https://github.com/minhaj14d/bookmrkd"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  github.com/minhaj14d/bookmrkd
+                </a>
+              </p>
             </div>
-            <p>
-              <a
-                href={chrome.runtime.getURL("src/privacy/privacy.html")}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Privacy policy
-              </a>
-            </p>
-            <p className="help">GPL-3.0 · Minhajul Abedin · github.com/minhaj14d/bookmrkd</p>
+
+            <ul className="about-links">
+              <li>
+                <a href={privacyUrl} target="_blank" rel="noopener noreferrer">
+                  Privacy policy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/minhaj14d/bookmrkd/issues"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Report an issue
+                </a>
+              </li>
+            </ul>
+
+            <p className="help about-meta">No analytics · No telemetry · Data stays on your device by default</p>
           </section>
         ) : null}
       </main>

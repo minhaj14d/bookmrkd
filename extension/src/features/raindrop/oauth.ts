@@ -16,9 +16,7 @@ export function getRaindropRedirectUri(): string {
 export async function connectRaindrop(): Promise<void> {
   const creds = await loadRaindropCredentials();
   if (!creds?.clientId || !creds.clientSecret) {
-    throw new Error(
-      "Raindrop app credentials missing. Add VITE_RAINDROP_CLIENT_ID and VITE_RAINDROP_CLIENT_SECRET to .env at the repo root, then run npm run build."
-    );
+    throw new Error("Raindrop sign-in is not available in this build.");
   }
 
   const redirectUri = getRaindropRedirectUri();

@@ -96,7 +96,7 @@ flowchart TB
 - **No data selling** — your library is not uploaded in v1.1.0
 - **Local-first** — IndexedDB on device; works offline for library features
 - **Optional AI** — only in Advanced → Online mode; title + URL batches to Gemini
-- **Future sync** — v1.2 will be explicit opt-in ([privacy page](extension/src/privacy/privacy.html) in build)
+- **Future sync** — v1.2 will be explicit opt-in ([privacy policy](docs/PRIVACY.md))
 
 ## Demo
 

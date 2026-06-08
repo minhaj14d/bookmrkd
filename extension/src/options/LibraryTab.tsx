@@ -164,8 +164,8 @@ export default function LibraryTab() {
         </div>
       ) : null}
 
-      <p className="help">
-        {filtered.length} of {all.length} bookmarks · local IndexedDB · no cloud sync in v1.1
+      <p className="help library-meta">
+        {filtered.length} of {all.length} bookmarks · stored locally on this device
       </p>
 
       <div className="library-split">

@@ -38,51 +38,70 @@
   </head>
   <body>
     <h1>bookmrkd Privacy Policy</h1>
-    <p class="meta">Effective: 22 May 2026 · Extension version <span id="ver"></span></p>
-
-    <p>
-      bookmrkd is a privacy-first bookmark library for Chrome. Your saved pages, tags, and search index stay on your
-      device unless you explicitly enable optional features below.
+    <p class="meta">
+      Effective: 8 June 2026 · Extension version <span id="ver"></span> ·
+      <a
+        href="https://github.com/minhaj14d/bookmrkd/blob/main/docs/PRIVACY.md"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Full policy on GitHub</a
+      >
     </p>
 
-    <h2>Local library (default)</h2>
+    <p>
+      bookmrkd is a local-first bookmark maintenance assistant for Firefox and Chromium-based browsers. Your data
+      stays on your device by default. Optional features may contact third-party services only when you turn them
+      on.
+    </p>
+
+    <h2>What we collect</h2>
+    <p>
+      <strong>Nothing is sent to bookmrkd servers.</strong> No accounts, no analytics, no advertising trackers.
+    </p>
+
+    <h2>Local storage (default)</h2>
     <ul>
       <li>
-        <strong>Saved bookmarks</strong> — URL, title, tags, favicon URL, and timestamps are stored in
-        <strong>IndexedDB</strong> on your device.
+        <strong>Library bookmarks</strong> — URL, title, tags, favicon URL, timestamps in
+        <strong>IndexedDB</strong>.
       </li>
-      <li>No bookmrkd servers receive this data. No analytics or advertising trackers run in the extension.</li>
+      <li><strong>SCA feedback</strong> — accept/reject/ignore choices in IndexedDB for local learning.</li>
+      <li><strong>Settings & optional API keys</strong> — in browser storage on your device.</li>
+      <li><strong>Raindrop tokens</strong> — stored locally only if you connect Raindrop.</li>
     </ul>
 
-    <h2>Advanced — organize Chrome bookmarks</h2>
+    <h2>Browser bookmarks (AI Suggestions &amp; Advanced)</h2>
     <p>
-      Optional bulk organize reads Chrome’s bookmark tree or HTML you import. Results are exported for manual import;
-      live bookmarks are not modified automatically.
+      Analysis reads your bookmark tree or imported HTML. Suggestions require your approval before anything changes.
     </p>
 
-    <h2>Advanced — Online mode (optional)</h2>
+    <h2>Optional: local AI (MiniLM)</h2>
     <p>
-      If you enable Online mode and save a Gemini API key, uncertain items may be sent to Google’s API as
-      <em>title + URL</em> only. Google’s privacy policy applies to that traffic.
+      Local embeddings may download a model from <strong>huggingface.co</strong> and run inference on your device.
     </p>
 
-    <h2>Cloud sync (v1.2, not enabled in v1.1)</h2>
+    <h2>Optional: cloud AI (Gemini / OpenAI)</h2>
     <p>
-      Future optional sync will require login and transmit library data only when you opt in. v1.1.0 does not sync to
-      any cloud service.
+      If you add an API key, <em>title + URL</em> (and similar short text) may be sent to Google or OpenAI. Use Local
+      rules or MiniLM to avoid this.
+    </p>
+
+    <h2>Optional: Raindrop.io</h2>
+    <p>
+      If connected, the extension uses Raindrop’s API with tokens stored locally. Raindrop’s privacy policy applies.
     </p>
 
     <h2>What we do not do</h2>
     <ul>
       <li>We do not sell your data.</li>
       <li>We do not run analytics or external logging.</li>
-      <li>We do not upload your library unless you enable a future sync feature.</li>
+      <li>We do not upload your library unless you enable optional features above.</li>
     </ul>
 
     <h2>Contact</h2>
     <p>
       Developer: <strong>Minhajul Abedin</strong> —
-      <a href="https://github.com/minhaj14d" target="_blank" rel="noopener">github.com/minhaj14d</a>
+      <a href="https://github.com/minhaj14d/bookmrkd/issues" target="_blank" rel="noopener">GitHub Issues</a>
     </p>
 
     <script type="module" src="./main.ts"></script>

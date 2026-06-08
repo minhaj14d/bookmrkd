@@ -18,6 +18,16 @@ export function hasRaindropEnvCredentials(): boolean {
   return getRaindropEnvCredentials() != null || getRaindropTestToken() != null;
 }
 
+/** OAuth app baked at build time (public Connect flow). */
+export function hasRaindropOAuthApp(): boolean {
+  return getRaindropEnvCredentials() != null;
+}
+
+/** Raindrop features enabled (OAuth app or dev test token). */
+export function isRaindropFeatureAvailable(): boolean {
+  return hasRaindropOAuthApp() || getRaindropTestToken() != null;
+}
+
 export function usesRaindropTestToken(): boolean {
   return getRaindropTestToken() != null;
 }

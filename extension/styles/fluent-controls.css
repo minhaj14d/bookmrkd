@@ -49,6 +49,7 @@
 
 /* Standard — neutral surface */
 .btn.standard,
+.btn.secondary,
 .btn.ghost,
 .btn--standard {
   background: var(--fluent-card);
@@ -58,6 +59,7 @@
 }
 
 .btn.standard:hover:not(:disabled),
+.btn.secondary:hover:not(:disabled),
 .btn.ghost:hover:not(:disabled),
 .btn--standard:hover:not(:disabled) {
   background: var(--fluent-card-secondary);

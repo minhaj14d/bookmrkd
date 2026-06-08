@@ -7,8 +7,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const inputPath = process.argv[2] || join(root, "my-backup-bm.html");
-const outputPath = process.argv[3] || join(root, "my-backup-bm-organized.html");
+const inputPath = process.argv[2] || join(root, "bookmarks-export.html");
+const outputPath = process.argv[3] || join(root, "bookmarks-organized.html");
 
 const MAX_TAGS = 3;
 

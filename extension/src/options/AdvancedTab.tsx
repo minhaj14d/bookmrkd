@@ -43,7 +43,6 @@ export default function AdvancedTab() {
   const [lastResult, setLastResult] = useState<OrganizeResult | null>(null);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
-  const [keyVisible, setKeyVisible] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState("");
 
   const load = useCallback(async () => {
@@ -145,10 +144,10 @@ export default function AdvancedTab() {
   return (
     <div className="advanced-tab">
       <section className="block">
-        <h2 className="block-title">Organize Chrome bookmarks</h2>
+        <h2 className="block-title">Organize browser bookmarks</h2>
         <p className="help">
-          Bulk dedupe and categorize your browser bookmark tree or imported HTML. Does not modify live
-          bookmarks — export HTML and import manually.
+          Bulk dedupe and categorize your bookmark tree or imported HTML. Does not modify live bookmarks —
+          export HTML and import manually.
         </p>
 
         <div className="segmented" role="group">
@@ -285,30 +284,34 @@ export default function AdvancedTab() {
                 </option>
               ))}
             </select>
-            <label className="label">API key</label>
-            <input
-              className="input"
-              type={keyVisible ? "text" : "password"}
-              value={apiKeyInput}
-              onChange={(e) => setApiKeyInput(e.target.value)}
-            />
-            <button
-              type="button"
-              className="btn standard"
-              onClick={async () => {
-                await saveApiKey(settings.aiProvider, apiKeyInput);
-                const keys = await loadApiKeys();
-                setApiKeys(keys);
-                setStatus("API key saved");
-              }}
-            >
-              Save key
-            </button>
-            <button type="button" className="link-btn" onClick={() => setKeyVisible(!keyVisible)}>
-              {keyVisible ? "Hide" : "Show"} key
-            </button>
+            <label className="label">API key (stored locally)</label>
+            <div className="api-key-row">
+              <input
+                className="input"
+                type="password"
+                autoComplete="off"
+                placeholder="Paste your API key"
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+              />
+              <button
+                type="button"
+                className="btn standard"
+                onClick={async () => {
+                  await saveApiKey(settings.aiProvider, apiKeyInput);
+                  const keys = await loadApiKeys();
+                  setApiKeys(keys);
+                  setApiKeyInput(keys[settings.aiProvider] || "");
+                  setStatus("API key saved");
+                }}
+              >
+                Save key
+              </button>
+            </div>
             <p className="help">
-              {hasApiKey(settings.aiProvider, apiKeys) ? "Key configured." : "Key required for Online mode."}
+              {hasApiKey(settings.aiProvider, apiKeys)
+                ? "API key saved on this device."
+                : "Add your own API key to use Online mode."}
             </p>
             <button
               type="button"

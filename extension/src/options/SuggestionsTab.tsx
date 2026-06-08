@@ -16,6 +16,7 @@ import HealthScoreCard from "./components/HealthScoreCard";
 import SuggestionSection from "./components/SuggestionSection";
 import ProviderSettingsPanel from "./components/ProviderSettingsPanel";
 import RaindropConnectPanel from "./components/RaindropConnectPanel";
+import { isRaindropFeatureAvailable } from "../features/raindrop/env-config";
 import { isRaindropConnected } from "../features/raindrop/storage";
 import "./suggestions.css";
 
@@ -35,6 +36,7 @@ export default function SuggestionsTab() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const raindropAvailable = isRaindropFeatureAvailable();
   const [raindropConnected, setRaindropConnected] = useState(false);
   const [tagSuggestions, setTagSuggestions] = useState<Suggestion[]>([]);
 
@@ -48,6 +50,11 @@ export default function SuggestionsTab() {
   useEffect(() => {
     load().catch(console.error);
   }, [load]);
+
+  useEffect(() => {
+    if (!settings || raindropAvailable || settings.dataSource !== "raindrop") return;
+    saveSettings({ dataSource: "browser" }).then(setSettings).catch(console.error);
+  }, [settings, raindropAvailable]);
 
   const allSuggestions = useMemo(() => {
     const chrome = job?.suggestions || [];
@@ -74,9 +81,15 @@ export default function SuggestionsTab() {
 
   const runAnalyze = async () => {
     if (!settings) return;
-    if (settings.dataSource === "raindrop" && !(await isRaindropConnected())) {
-      setStatus("Connect Raindrop first (section below).");
-      return;
+    if (settings.dataSource === "raindrop") {
+      if (!raindropAvailable) {
+        setStatus("Raindrop is not enabled in this build.");
+        return;
+      }
+      if (!(await isRaindropConnected())) {
+        setStatus("Connect Raindrop first.");
+        return;
+      }
     }
     setBusy(true);
     setStatus(
@@ -213,8 +226,7 @@ export default function SuggestionsTab() {
   return (
     <div className="sca-tab">
       <p className="help sca-intro">
-        Smart Collection Assistant analyzes your existing bookmark folders and suggests improvements.
-        Nothing changes until you approve.
+        Analyzes your bookmark folders and suggests improvements. Nothing changes until you approve.
       </p>
 
       {job?.healthScore != null ? (
@@ -257,23 +269,25 @@ export default function SuggestionsTab() {
               setSettings(next);
             }}
           />
-          Browser bookmarks (Chrome / Firefox)
+          Browser bookmarks
         </label>
-        <label className="sca-radio">
-          <input
-            type="radio"
-            name="sca-source"
-            checked={dataSource === "raindrop"}
-            onChange={async () => {
-              const next = await saveSettings({ dataSource: "raindrop" });
-              setSettings(next);
-            }}
-          />
-          Raindrop.io
-          {!raindropConnected && dataSource === "raindrop" ? (
-            <span className="sca-source-warn"> — connect above first</span>
-          ) : null}
-        </label>
+        {raindropAvailable ? (
+          <label className="sca-radio">
+            <input
+              type="radio"
+              name="sca-source"
+              checked={dataSource === "raindrop"}
+              onChange={async () => {
+                const next = await saveSettings({ dataSource: "raindrop" });
+                setSettings(next);
+              }}
+            />
+            Raindrop.io
+            {!raindropConnected && dataSource === "raindrop" ? (
+              <span className="sca-source-warn"> — connect above first</span>
+            ) : null}
+          </label>
+        ) : null}
         <label className="sca-radio">
           <input
             type="radio"

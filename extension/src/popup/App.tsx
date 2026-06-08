@@ -94,7 +94,7 @@ export default function App() {
       </header>
 
       <main className="main">
-        <p className="hint">Save the current tab to your local library. Tags stay on this device.</p>
+        <p className="hint">Save this page to your local library. Data stays on this device.</p>
 
         <label className="label" htmlFor="title-edit">
           Title
@@ -167,17 +167,11 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        <button type="button" className="btn analyze" disabled={busy} onClick={onSave}>
+        <button type="button" className="btn primary" disabled={busy} onClick={onSave}>
           Save this page
         </button>
         <span className="version">v{version}</span>
       </footer>
-
-      <p className="footer-link">
-        <button type="button" className="link-btn" onClick={() => chrome.runtime.openOptionsPage()}>
-          Open full library &amp; search →
-        </button>
-      </p>
     </div>
   );
 }

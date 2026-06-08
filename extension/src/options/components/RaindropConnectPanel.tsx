@@ -4,10 +4,7 @@ import {
   disconnectRaindrop,
   getRaindropRedirectUri,
 } from "../../features/raindrop/oauth";
-import {
-  hasRaindropEnvCredentials,
-  usesRaindropTestToken,
-} from "../../features/raindrop/env-config";
+import { hasRaindropOAuthApp } from "../../features/raindrop/env-config";
 import { isRaindropConnected } from "../../features/raindrop/storage";
 
 interface Props {
@@ -15,14 +12,12 @@ interface Props {
 }
 
 export default function RaindropConnectPanel({ onConnectionChange }: Props) {
-  const [configured, setConfigured] = useState(hasRaindropEnvCredentials());
   const [connected, setConnected] = useState(false);
   const [redirectUri, setRedirectUri] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
 
   const refresh = useCallback(async () => {
-    setConfigured(hasRaindropEnvCredentials());
     const ok = await isRaindropConnected();
     setConnected(ok);
     onConnectionChange?.(ok);
@@ -37,13 +32,9 @@ export default function RaindropConnectPanel({ onConnectionChange }: Props) {
     refresh().catch(console.error);
   }, [refresh]);
 
+  if (!hasRaindropOAuthApp()) return null;
+
   const connect = async () => {
-    if (!configured) {
-      setStatus(
-        "Add VITE_RAINDROP_CLIENT_ID and VITE_RAINDROP_CLIENT_SECRET to .env, then rebuild the extension."
-      );
-      return;
-    }
     setBusy(true);
     setStatus("Opening Raindrop sign-in…");
     try {
@@ -71,60 +62,38 @@ export default function RaindropConnectPanel({ onConnectionChange }: Props) {
   const copyRedirect = async () => {
     if (!redirectUri) return;
     await navigator.clipboard.writeText(redirectUri);
-    setStatus("Redirect URI copied — paste it in Raindrop → Settings → Integrations → your app.");
+    setStatus("Redirect URI copied.");
   };
 
   return (
     <section className="sca-raindrop-panel block">
-      <h3 className="block-title">Raindrop.io</h3>
+      <h3 className="block-title">Raindrop.io (optional)</h3>
       <p className="help">
-        OAuth app credentials come from your repo <code>.env</code> (see <code>.env.example</code>).
-        Create an app at{" "}
-        <a href="https://app.raindrop.io/settings/integrations" target="_blank" rel="noopener noreferrer">
-          Raindrop Integrations
-        </a>
-        , then rebuild after editing <code>.env</code>.
+        Connect your Raindrop account to analyze collections and apply approved moves. You sign in with
+        Raindrop; bookmrkd does not store your Raindrop password.
       </p>
 
-      {usesRaindropTestToken() ? (
-        <p className="help sca-raindrop-ok">
-          Using <strong>Test token</strong> from <code>.env</code> — no Connect step needed (personal use only).
-        </p>
-      ) : configured ? (
-        <p className="help sca-raindrop-ok">Raindrop OAuth app credentials loaded from build.</p>
-      ) : (
-        <p className="help sca-source-warn">
-          Not configured — set <code>VITE_RAINDROP_CLIENT_ID</code> and <code>VITE_RAINDROP_CLIENT_SECRET</code> in{" "}
-          <code>.env</code>, then run <code>npm run build</code> in <code>extension/</code>.
-        </p>
-      )}
-
       <div className="sca-raindrop-actions">
-        {!usesRaindropTestToken() && !connected ? (
-          <button
-            type="button"
-            className="btn primary"
-            onClick={connect}
-            disabled={busy || !configured}
-          >
+        {!connected ? (
+          <button type="button" className="btn primary" onClick={connect} disabled={busy}>
             Connect Raindrop
           </button>
-        ) : !usesRaindropTestToken() ? (
-          <button type="button" className="btn secondary" onClick={disconnect} disabled={busy}>
+        ) : (
+          <button type="button" className="btn standard" onClick={disconnect} disabled={busy}>
             Disconnect
           </button>
-        ) : null}
+        )}
       </div>
 
-      {connected || usesRaindropTestToken() ? (
-        <p className="help sca-raindrop-ok">Ready — choose <strong>Raindrop</strong> as data source below.</p>
+      {connected ? (
+        <p className="help sca-raindrop-ok">Connected — choose Raindrop as the data source below.</p>
       ) : null}
 
-      {!usesRaindropTestToken() && redirectUri ? (
+      {!connected && redirectUri ? (
         <div className="sca-redirect-uri">
-          <span className="label">Redirect URI (add in Raindrop app)</span>
+          <span className="label">Redirect URI (for Raindrop app setup)</span>
           <code className="sca-redirect-code">{redirectUri}</code>
-          <button type="button" className="btn secondary" onClick={copyRedirect}>
+          <button type="button" className="btn standard" onClick={copyRedirect}>
             Copy redirect URI
           </button>
         </div>

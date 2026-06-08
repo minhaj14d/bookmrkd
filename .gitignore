@@ -3,7 +3,35 @@
 .env.*
 !.env.example
 
-# Python
+# Node / extension
+node_modules/
+extension/node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.bak
+
+# Extension build outputs
+dist/
+extension/dist/
+extension/dist-firefox/
+build/
+out/
+release/
+web-ext-artifacts/
+*.crx
+*.pem
+*.xpi
+*.zip
+
+# Test / tooling caches
+coverage/
+.nyc_output/
+*.tsbuildinfo
+.vite/
+.turbo/
+
+# Python (scripts / optional tooling)
 __pycache__/
 *.py[cod]
 *$py.class
@@ -13,25 +41,6 @@ venv/
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
-
-# Node / extension dev
-node_modules/
-npm-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-extension/node_modules/
-
-# Build & packaging
-dist/
-extension/dist/
-extension/dist-firefox/
-build/
-out/
-release/
-*.crx
-*.pem
-*.zip
-*.env
 
 # OS & editors
 .DS_Store
@@ -43,19 +52,27 @@ Desktop.ini
 .vscode/*
 !.vscode/extensions.json
 
-# Bookmark backups & exports
-*.backup-*.html
-bookmarks_export*.html
-cleaned_bookmarks.html
-
-# Extension local
-extension/.DS_Store
-
 # Logs
 *.log
 logs/
 
-# Local / internal docs (README + CHANGELOG tracked)
-*.md
-!/README.md
-!/CHANGELOG.md
+# Personal bookmark exports (do not commit)
+my-backup-bm*.html
+*-backup-bm*.html
+*.backup-*.html
+bookmarks_export*.html
+bookmrkd-library-*.json
+bookmrkd_*.html
+
+# Local scratch / one-off outputs
+cleaned_bookmarks.html
+
+# Internal dev notes (optional — omit from public repo)
+COMMIT_STRATEGY.md
+CURRENT_STATE_SUMMARY.md
+VERSION_PLAN.md
+RELEASE_CHECKLIST.md
+RELEASE.md
+RAINDROP-IMPORT.md
+extension/BUG_REPORT.md
+extension/REFACTOR_PLAN.md

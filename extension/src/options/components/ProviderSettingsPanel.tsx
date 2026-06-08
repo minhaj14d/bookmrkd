@@ -3,7 +3,6 @@ const PROVIDERS = [
   { id: "transformers", label: "Local embeddings (MiniLM)" },
   { id: "gemini", label: "Google Gemini (optional)" },
   { id: "openai", label: "OpenAI (optional)" },
-  { id: "desktop", label: "Desktop GGUF bridge (optional)" },
 ] as const;
 
 interface Props {
@@ -24,7 +23,7 @@ export default function ProviderSettingsPanel({
         <select
           value={scaProvider}
           onChange={(e) => onProviderChange(e.target.value)}
-          aria-label="Smart Collection provider"
+          aria-label="Analysis provider"
         >
           {PROVIDERS.map((p) => (
             <option key={p.id} value={p.id}>
@@ -35,24 +34,19 @@ export default function ProviderSettingsPanel({
       </label>
       {networkWarning ? (
         <p className="help sca-network-warn">
-          Selected provider may send bookmark titles and URLs to a third-party API. Keys stay on your device.
+          May send bookmark titles and URLs to a third-party API. Your API key stays on this device.
         </p>
       ) : null}
       {scaProvider === "gemini" ? (
-        <p className="help sca-network-warn">
-          Free Gemini keys often hit <strong>429 too many requests</strong>. Use{" "}
-          <strong>Local embeddings (MiniLM)</strong> for Raindrop analysis without API limits.
+        <p className="help">
+          Free Gemini keys can hit rate limits. Prefer <strong>Local rules</strong> or{" "}
+          <strong>Local embeddings</strong> for large libraries.
         </p>
       ) : null}
       {scaProvider === "transformers" ? (
         <p className="help sca-embeddings-note">
-          First use downloads the MiniLM model (~25&nbsp;MB from huggingface.co, then cached locally). Keep this
-          tab open until analysis finishes. For very large libraries, use Local rules instead.
-        </p>
-      ) : null}
-      {scaProvider === "desktop" ? (
-        <p className="help">
-          Install the bookmrkd native host (<code>io.bookmrkd.llm_bridge</code>) to score via local GGUF.
+          First use downloads the MiniLM model (~25&nbsp;MB, cached locally). Keep this tab open until
+          analysis finishes.
         </p>
       ) : null}
     </div>

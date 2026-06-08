@@ -7,10 +7,10 @@ export interface SyncAdapter {
 
 export class SyncNotImplemented implements SyncAdapter {
   async pull(): Promise<BookmarkEntry[]> {
-    throw new Error("Cloud sync is planned for v1.2 (Supabase).");
+    throw new Error("Cloud sync is not available.");
   }
 
   async push(_entries: BookmarkEntry[]): Promise<void> {
-    throw new Error("Cloud sync is planned for v1.2 (Supabase).");
+    throw new Error("Cloud sync is not available.");
   }
 }

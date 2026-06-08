@@ -465,20 +465,6 @@ h1 {
   color: var(--text-muted);
 }
 
-.footer-link {
-  text-align: center;
-  padding: var(--space-2);
-}
-
-.link-btn {
-  background: none;
-  border: none;
-  color: var(--accent);
-  cursor: pointer;
-  font-size: 11px;
-  text-decoration: underline;
-}
-
 .footer {
   flex-shrink: 0;
   border-top: 1px solid var(--border);
@@ -486,9 +472,38 @@ h1 {
   background: var(--bg-elevated);
 }
 
-.footer .btn.analyze {
+.footer .btn.primary {
   width: 100%;
   margin-bottom: var(--space-2);
+}
+
+.popup-shell .btn-icon {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.popup-shell .btn-icon:hover,
+.popup-shell .btn-icon:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.popup-shell .btn-icon:hover img,
+.popup-shell .btn-icon:focus-visible img {
+  filter: brightness(0) invert(1);
+}
+
+.popup-shell .chip {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
+.popup-shell .chip:hover {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.popup-shell .recent-list a:hover strong {
+  color: var(--accent);
 }
 
 .footer .version {

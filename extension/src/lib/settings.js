@@ -58,8 +58,10 @@ function migrateSettings(raw) {
   const ds = String(s.dataSource || "browser");
   s.dataSource = ds === "html" || ds === "raindrop" ? ds : "browser";
   const scaIds = ["rule", "transformers", "gemini", "openai", "desktop"];
-  if (!scaIds.includes(s.scaProvider)) s.scaProvider = "rule";
-  if (!scaIds.includes(s.scaFallbackProvider)) s.scaFallbackProvider = "rule";
+  if (!scaIds.includes(s.scaProvider) || s.scaProvider === "desktop") s.scaProvider = "rule";
+  if (!scaIds.includes(s.scaFallbackProvider) || s.scaFallbackProvider === "desktop") {
+    s.scaFallbackProvider = "rule";
+  }
   if (typeof s.scaAutoRun !== "boolean") s.scaAutoRun = false;
   if (typeof s.scaSemanticThreshold !== "number") s.scaSemanticThreshold = 0.82;
   if (typeof s.scaNewFolderMinConfidence !== "number") s.scaNewFolderMinConfidence = 92;
